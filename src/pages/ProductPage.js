@@ -5,6 +5,7 @@ import { Col, Container, Dropdown, DropdownItem, DropdownMenu, DropdownToggle, R
 import CardProduct from '../components/cardProduct';
 
 const ProductPage = (props) => {
+    console.log(props.location.search) //?category=demam
     // Dropdown Setting 
     const [dropdownName, setDropdownName] = useState('Sortir');
     const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -18,7 +19,7 @@ const ProductPage = (props) => {
     })
 
     useEffect(() => {
-        dispatch(getProducts())
+        dispatch(getProducts(props.location.search))
     }, [])
 
 
@@ -85,14 +86,23 @@ const ProductPage = (props) => {
         { renderProduct() }
     }
 
+    // Category Title
+    const renderCategory = () => {
+        if (products.length > 0) {
+            return (
+                <div className="card-tranparent" style={{ display: 'flex' }}>
+                    <img style={{ marginLeft: 7, marginBottom: 20, marginTop: 25 }} width='8%' src={products[0].thumb} alt={products[0].category} />
+                    <h5 style={{ marginLeft: 20, marginTop: 33, letterSpacing: 2.5 }}>{products[0].category}</h5>
+                </div>
+            )
+        }
+    }
+
     return (
         <Container>
             <Row>
                 <Col>
-                    <div className="card-tranparent" style={{ display: 'flex' }}>
-                        <img style={{ marginLeft: 7, marginBottom: 20, marginTop: 25 }} width='8%' src={products[0].thumb} alt={products[0].category} />
-                        <h5 style={{ marginLeft: 20, marginTop: 33, letterSpacing: 2.5 }}>{products[0].category}</h5>
-                    </div>
+                    {renderCategory()}
                 </Col>
                 <Col>
                     <Dropdown isOpen={dropdownOpen} toggle={toggle} >

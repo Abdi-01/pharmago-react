@@ -1,10 +1,25 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Slider from 'react-slick';
 import { Link } from 'react-router-dom';
 import { BloodIcon, DrugIcon, IvIcon } from '../../assets';
 import './slide.css';
+import { getCategory } from '../../redux/actions/productsAction';
+import { useDispatch, useSelector } from 'react-redux';
 
 const CardCategory = () => {
+  // GET CATEGORY
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    dispatch(getCategory())
+  }, [])
+
+  const { category } = useSelector(state => {
+    return {
+      category: state.ProductsReducer.category
+    }
+  })
+
   const settings = {
     infinite: true,
     slidesToShow: 1,
@@ -37,9 +52,12 @@ const CardCategory = () => {
     DrugIcon,
   ];
 
+
   const handleCategory = (idx) => {
     alert(idx);
   };
+
+  console.log('test', category[0].category)
 
   return (
     <div className='mt-5'>
@@ -52,7 +70,7 @@ const CardCategory = () => {
         </div>
         {image.map((item, idx) => {
           return (
-            <Link to='/search' key={idx}>
+            <Link to={`/products?category=DEMAM`} key={idx}>
               <div style={{ width: 200 }}>
                 <img
                   src={item}
@@ -68,7 +86,10 @@ const CardCategory = () => {
                     wordWrap: true,
                   }}
                 >
-                  Category - {idx + 1}
+
+                  {/* Category - {idx + 1} */}
+                  {category[1].category + idx}
+                  {/* masih gagal => category[idx].category */}
                 </p>
               </div>
             </Link>
