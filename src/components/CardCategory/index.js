@@ -57,7 +57,11 @@ const CardCategory = () => {
     alert(idx);
   };
 
-  console.log('test', category[0].category)
+  {
+    if (category) {
+      console.log('test', category[0].category)
+    }
+  }
 
   return (
     <div className='mt-5'>
@@ -68,14 +72,14 @@ const CardCategory = () => {
             Custom Orders
           </p>
         </div>
-        {image.map((item, idx) => {
+        {category.length > 0 && category.map((item, idx) => {
           return (
-            <Link to={`/products?category=DEMAM`} key={idx}>
+            <Link to={`/products?category=${item.category}`} key={idx}>
               <div style={{ width: 200 }}>
                 <img
-                  src={item}
+                  src={item.thumb}
                   width='30%'
-                  alt={item}
+                  alt={item.category}
                   style={{ marginTop: 20 }}
                 />
                 <p
@@ -86,10 +90,8 @@ const CardCategory = () => {
                     wordWrap: true,
                   }}
                 >
-
                   {/* Category - {idx + 1} */}
-                  {category[1].category + idx}
-                  {/* masih gagal => category[idx].category */}
+                  {item.category}
                 </p>
               </div>
             </Link>
