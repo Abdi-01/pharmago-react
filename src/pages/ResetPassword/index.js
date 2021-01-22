@@ -3,8 +3,8 @@ import { Button } from 'reactstrap';
 import { useForm } from 'react-hook-form';
 import { Alert } from 'reactstrap';
 import { useDispatch } from 'react-redux';
-import { resetPassword } from '../../actions';
 import { useHistory } from 'react-router-dom';
+import { resetPassword } from '../../redux/actions';
 
 const ResetPassword = (props) => {
   const { register, errors, handleSubmit, watch } = useForm();

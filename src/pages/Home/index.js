@@ -1,7 +1,16 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { CardCategory, Banner } from '../../components';
+import { useDispatch } from 'react-redux';
+import { getProducts } from '../../redux/actions/productsAction';
+
 
 const Home = () => {
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+      dispatch(getProducts())
+  }, [])
+
   return (
     <div className='container mt-2'>
       <div

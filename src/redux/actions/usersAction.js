@@ -1,10 +1,10 @@
 import Axios from 'axios';
-import { APIURL } from '../config/path';
+import { API_URL } from '../../support/urlApi';
 
 export const loginUser = (email, password, cb) => {
   return async (dispatch) => {
     try {
-      const results = await Axios.post(APIURL + `/users/login`, {
+      const results = await Axios.post(API_URL + `/users/login`, {
         email,
         password,
       });
@@ -27,7 +27,7 @@ export const loginUser = (email, password, cb) => {
 export const forgotPassword = (email, cb) => {
   return async (dispatch) => {
     try {
-      const results = await Axios.post(APIURL + `/users/forgot-password`, {
+      const results = await Axios.post(API_URL + `/users/forgot-password`, {
         email,
       });
       console.log('action forgotPassword', results);
@@ -49,7 +49,7 @@ export const forgotPassword = (email, cb) => {
 export const resetPassword = (password, iduser, cb) => {
   return async (dispatch) => {
     try {
-      const results = await Axios.post(APIURL + `/users/reset-password`, {
+      const results = await Axios.post(API_URL + `/users/reset-password`, {
         password,
         iduser,
       });
@@ -73,7 +73,7 @@ export const keepLogin = () => {
         },
       };
       if (localStorage.getItem('token')) {
-        let results = await Axios.get(APIURL + `/users/keep-login`, headers);
+        let results = await Axios.get(API_URL + `/users/keep-login`, headers);
         localStorage.setItem('token', results.data.token);
         dispatch({
           type: 'KEEP_LOGIN',

@@ -2,7 +2,6 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { LogoPharmaGo } from '../../assets';
 import { useDispatch, useSelector } from 'react-redux';
-import { loginUser, forgotPassword, getSearch } from '../../actions';
 import './navbar.css';
 import { Login, ForgotPassword, Suggestions } from '..';
 import {
@@ -12,7 +11,8 @@ import {
   DropdownItem,
 } from 'reactstrap';
 import axios from 'axios';
-import { APIURL } from '../../config/path';
+import { loginUser, forgotPassword, getSearch } from '../../redux/actions';
+import { API_URL } from '../../support/urlApi';
 
 const NavbarCom = (props) => {
   const [results, setResults] = useState([]);
@@ -31,13 +31,13 @@ const NavbarCom = (props) => {
   const history = useHistory();
 
   const { errorStatus, errorMessage, iduser, role, products } = useSelector(
-    ({ usersReducer, productsReducer }) => {
+    ({ usersReducer, ProductsReducer }) => {
       return {
         errorStatus: usersReducer.errorStatus,
         errorMessage: usersReducer.errorMessage,
         role: usersReducer.role,
         iduser: usersReducer.iduser,
-        products: productsReducer.products,
+        products: ProductsReducer.products,
       };
     }
   );
@@ -120,7 +120,7 @@ const NavbarCom = (props) => {
 
   // get search product
   const getSearchProduct = (query) => {
-    axios.get(`${APIURL}/products?keyword=${query}`).then(({ data }) => {
+    axios.get(`${API_URL}/products/search?keyword=${query}`).then(({ data }) => {
       setResults(data.products);
     });
   };
@@ -191,27 +191,35 @@ const NavbarCom = (props) => {
                       <DropdownMenu right>
                         <DropdownItem>Dashboard Admin</DropdownItem>
                       </DropdownMenu>
-                      <DropdownMenu right>
-                        <DropdownItem>Logout</DropdownItem>
-                      </DropdownMenu>
+
                     </Dropdown>
                   ) : (
-                    <Dropdown isOpen={dropdownOpen} toggle={toggle}>
-                      <DropdownToggle
-                        style={{
-                          backgroundColor: 'transparent',
-                          border: 'none',
-                        }}
-                      >
-                        <i className='large material-icons right-menu_icon'>
-                          input
+                      <Dropdown isOpen={dropdownOpen} toggle={toggle}>
+                        <DropdownToggle
+                          style={{
+                            backgroundColor: 'transparent',
+                            border: 'none',
+                          }}
+                        >
+                          <i className='large material-icons right-menu_icon'>
+                            input
                         </i>
+<<<<<<< HEAD
                       </DropdownToggle>
                       <DropdownMenu right>
                         <DropdownItem onClick={openModal}>Login</DropdownItem>
                       </DropdownMenu>
                     </Dropdown>
                   )}
+=======
+                        </DropdownToggle>
+                        <DropdownMenu right>
+                          <DropdownItem onClick={openModal}>Login</DropdownItem>
+                        </DropdownMenu>
+
+                      </Dropdown>
+                    )}
+>>>>>>> 65543175497406f14d2820ad4dcbf4f6b16a5347
                 </li>
               </ul>
             </div>

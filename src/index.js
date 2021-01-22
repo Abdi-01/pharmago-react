@@ -2,15 +2,17 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './index.css';
+import { BrowserRouter } from 'react-router-dom';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import { BrowserRouter } from 'react-router-dom';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import { Provider } from 'react-redux';
 import { applyMiddleware, createStore } from 'redux';
-import Reducer from './reducers';
-import thunk from 'redux-thunk';
+import { Reducer } from './redux/reducers';
+import ReduxThunk from 'redux-thunk'
 
-const storeReducer = createStore(Reducer, {}, applyMiddleware(thunk));
+
+const storeReducer = createStore(Reducer, {}, applyMiddleware(ReduxThunk))
 
 ReactDOM.render(
   <Provider store={storeReducer}>
