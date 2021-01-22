@@ -15,21 +15,3 @@ export const getProducts = () => {
     }
   };
 };
-
-export const getSearch = (search, onSuccess) => {
-  return async (dispatch) => {
-    try {
-      const results = await Axios.get(
-        APIURL + `/products?keywordSearch=${search}`
-      );
-      console.log('action getSearchProduct', results.data.products);
-      dispatch({
-        type: 'GET_PRODUCTS',
-        payload: results.data.products,
-      });
-      onSuccess();
-    } catch (error) {
-      console.log(error);
-    }
-  };
-};

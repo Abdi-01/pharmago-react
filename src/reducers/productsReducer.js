@@ -1,5 +1,6 @@
 const INITIAL_STATE = {
   products: [],
+  search: [],
 };
 
 export default (state = INITIAL_STATE, action) => {

@@ -1,9 +1,9 @@
-import React, { Fragment, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { Switch, Route } from 'react-router-dom';
 import { NavbarCom } from './components';
-import { getProducts } from './actions';
+import { getProducts, keepLogin } from './actions';
 
-import { Home, SearchResult } from './pages';
+import { Home, ResetPassword, SearchResult } from './pages';
 import { useDispatch } from 'react-redux';
 
 const App = (props) => {
@@ -11,6 +11,7 @@ const App = (props) => {
 
   useEffect(() => {
     dispatch(getProducts());
+    dispatch(keepLogin());
   }, []);
 
   return (
@@ -19,6 +20,7 @@ const App = (props) => {
       <Switch>
         <Route path='/' exact component={Home} />
         <Route path='/search' component={SearchResult} />
+        <Route path='/reset-password/:iduser' component={ResetPassword} />
       </Switch>
     </div>
   );
