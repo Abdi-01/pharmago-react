@@ -210,9 +210,6 @@ const NavbarCom = (props) => {
                       <DropdownMenu right>
                         <DropdownItem onClick={openModal}>Login</DropdownItem>
                       </DropdownMenu>
-                      <DropdownMenu right>
-                        <DropdownItem>Logout</DropdownItem>
-                      </DropdownMenu>
                     </Dropdown>
                   )}
                 </li>
