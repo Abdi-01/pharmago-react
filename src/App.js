@@ -1,7 +1,6 @@
 import React, { Fragment, useEffect } from 'react';
 import './App.css';
 import { Route, Switch } from 'react-router-dom';
-import HomeTemp from './pages/HomeTemp';
 import ProductPage from './pages/ProductPage';
 import ProductDetail from './pages/ProductDetail';
 import { NavbarCom } from './components';
