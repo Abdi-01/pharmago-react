@@ -120,9 +120,11 @@ const NavbarCom = (props) => {
 
   // get search product
   const getSearchProduct = (query) => {
-    axios.get(`${API_URL}/products/search?keyword=${query}`).then(({ data }) => {
-      setResults(data.products);
-    });
+    axios
+      .get(`${API_URL}/products/search?keyword=${query}`)
+      .then(({ data }) => {
+        setResults(data.products);
+      });
   };
 
   // search function
@@ -191,35 +193,24 @@ const NavbarCom = (props) => {
                       <DropdownMenu right>
                         <DropdownItem>Dashboard Admin</DropdownItem>
                       </DropdownMenu>
-
                     </Dropdown>
                   ) : (
-                      <Dropdown isOpen={dropdownOpen} toggle={toggle}>
-                        <DropdownToggle
-                          style={{
-                            backgroundColor: 'transparent',
-                            border: 'none',
-                          }}
-                        >
-                          <i className='large material-icons right-menu_icon'>
-                            input
+                    <Dropdown isOpen={dropdownOpen} toggle={toggle}>
+                      <DropdownToggle
+                        style={{
+                          backgroundColor: 'transparent',
+                          border: 'none',
+                        }}
+                      >
+                        <i className='large material-icons right-menu_icon'>
+                          input
                         </i>
-<<<<<<< HEAD
                       </DropdownToggle>
                       <DropdownMenu right>
                         <DropdownItem onClick={openModal}>Login</DropdownItem>
                       </DropdownMenu>
                     </Dropdown>
                   )}
-=======
-                        </DropdownToggle>
-                        <DropdownMenu right>
-                          <DropdownItem onClick={openModal}>Login</DropdownItem>
-                        </DropdownMenu>
-
-                      </Dropdown>
-                    )}
->>>>>>> 65543175497406f14d2820ad4dcbf4f6b16a5347
                 </li>
               </ul>
             </div>
