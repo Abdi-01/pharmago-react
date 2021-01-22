@@ -57,12 +57,6 @@ const CardCategory = () => {
     alert(idx);
   };
 
-  {
-    if (category) {
-      console.log('test', category[0].category)
-    }
-  }
-
   return (
     <div className='mt-5'>
       <Slider {...settings}>
@@ -74,7 +68,7 @@ const CardCategory = () => {
         </div>
         {category.length > 0 && category.map((item, idx) => {
           return (
-            <Link to={`/products?category=${item.category}`} key={idx}>
+            <Link to={`/products?idcategory=${item.idcategory}`} key={idx}>
               <div style={{ width: 200 }}>
                 <img
                   src={item.thumb}
