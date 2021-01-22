@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { getDetail, getProducts } from '../redux/actions/productsAction';
-import { Alert, Button, Card, CardBody, CardImg, Col, Container, Nav, NavItem, NavLink, Row, TabContent, TabPane, UncontrolledTooltip } from 'reactstrap';
 import classnames from 'classnames';
-import { addToCart } from '../redux/actions/cartAction';
+import { Alert, Button, Card, CardBody, CardImg, Col, Container, Nav, NavItem, NavLink, Row, TabContent, TabPane, UncontrolledTooltip } from 'reactstrap';
+import { addToCart, getDetail, getProducts } from '../redux/actions';
+import { useDispatch, useSelector } from 'react-redux';;
 
 const ProductDetail = (props) => {
     console.log(props.location.search) //?idproduct=1
-    
+
     const dispatch = useDispatch()
     const [qtyCart, setQtyCart] = useState(1);
     const [visible, setVisible] = useState(false);
@@ -53,7 +52,7 @@ const ProductDetail = (props) => {
     // Add to Cart & Beli Langsung Function
     const btAddCart = (iduser, idproduct, qty) => {
         alert(`req body ke BE: ${iduser}, ${idproduct}, ${qty}`)
-        dispatch(addToCart({iduser, idproduct, qty}))
+        dispatch(addToCart({ iduser, idproduct, qty }))
 
     }
 

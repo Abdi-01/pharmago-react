@@ -50,3 +50,18 @@ export const getCategory = () => {
         }
     }
 }
+
+export const getProductSearch = () => {
+    return async (dispatch) => {
+      try {
+        const results = await axios.get(API_URL + `/products/search`);
+        console.log('action getProducts', results.data.products);
+        dispatch({
+          type: 'GET_PRODUCTS_SEARCH',
+          payload: results.data.products,
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    };
+  };
