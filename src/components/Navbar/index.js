@@ -1,38 +1,96 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Link, useHistory } from 'react-router-dom';
-import { LogoPharmaGo } from '../../assets';
-import { getSearch } from '../../actions';
-import { useDispatch } from 'react-redux';
-
+import { LogoPharmaGo, no_data } from '../../assets';
+import { useDispatch, useSelector } from 'react-redux';
 import './navbar.css';
+import { Login, ForgotPassword, Suggestions } from '..';
 import {
   Dropdown,
   DropdownToggle,
   DropdownMenu,
   DropdownItem,
-  Input,
-  InputGroup,
-  InputGroupAddon,
   Button,
+  Badge,
+  Card,
+  CardBody,
+  CardImg,
 } from 'reactstrap';
-import { Login } from '..';
+import axios from 'axios';
+import { loginUser, forgotPassword, getSearch, getCart } from '../../redux/actions';
+import { API_URL } from '../../support/urlApi';
 
 const NavbarCom = (props) => {
-  const [search, setSearch] = useState('');
-  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [results, setResults] = useState([]);
+  const [query, setQuery] = useState('');
   const [visible, setVisible] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [visibleAlert, setVisibleAlert] = useState(false);
+  const [visibleForgotPassword, setVisibleForgotPassword] = useState(false);
+  const [visibleAlertForgotPassword, setVisibleAlertForgotPassword] = useState(
+    false
+  );
+  const [dropCartOpen, setDropCartOpen] = useState(false);
+
+
+  const searchRef = useRef(null);
   const dispatch = useDispatch();
   const toggle = () => setDropdownOpen((prevState) => !prevState);
+  const toggleCart = () => setDropCartOpen((prevState) => !prevState);
   const history = useHistory();
 
-  const handleSearch = () => {
+  const { errorStatus, errorMessage, iduser, role, products, cartUser } = useSelector(
+    ({ usersReducer, ProductsReducer, CartReducer }) => {
+      return {
+        errorStatus: usersReducer.errorStatus,
+        errorMessage: usersReducer.errorMessage,
+        role: usersReducer.role,
+        iduser: usersReducer.iduser,
+        products: ProductsReducer.products,
+        cartUser: CartReducer.cartUser
+      };
+    }
+  );
+
+  useEffect(() => {
+    dispatch(getCart(localStorage.getItem('refreshcart')))
+  }, [])
+
+  // submit for login form
+  const onSubmit = (data) => {
+    const { email, password } = data;
     dispatch(
-      getSearch(search, () =>
-        history.push({ pathname: '/search', state: 'HELLO' })
-      )
+      loginUser(email, password, () => {
+        setVisibleAlert(true);
+        setTimeout(() => {
+          setVisible(false);
+        }, 1500);
+      })
     );
+    setVisibleAlert(true);
+    setTimeout(() => {
+      setVisibleAlert(false);
+    }, 2000);
   };
 
+  //  open/close modal alert
+  const openAlert = () => {
+    setVisibleAlert(true);
+  };
+
+  const closeAlert = () => {
+    setVisibleAlert(false);
+  };
+
+  //  open/close modal alert
+  const openAlertForPassword = () => {
+    setVisibleAlertForgotPassword(true);
+  };
+
+  const closeAlertForPassword = () => {
+    setVisibleAlertForgotPassword(false);
+  };
+
+  // open/clsoe login modal
   const openModal = () => {
     setVisible(true);
   };
@@ -41,8 +99,129 @@ const NavbarCom = (props) => {
     setVisible(false);
   };
 
+  //  open/close forgot password modal
+  const openForgotPassword = () => {
+    setVisibleForgotPassword(true);
+    setTimeout(() => {
+      setVisible(false);
+    }, 100);
+  };
+
+  const closeForgotPassword = () => {
+    setVisibleForgotPassword(false);
+  };
+
+  // submit for forgot password modal
+  const onForgotPassword = (data) => {
+    let { email } = data;
+    dispatch(
+      forgotPassword(email, () => {
+        setVisibleAlertForgotPassword(true);
+        setTimeout(() => {
+          setTimeout(() => {
+            setVisibleAlertForgotPassword(false);
+          }, 2000);
+          setVisibleForgotPassword(false);
+        }, 3000);
+      })
+    );
+    setVisibleAlertForgotPassword(true);
+    setTimeout(() => {
+      setVisibleAlertForgotPassword(false);
+    }, 2000);
+  };
+
+  // get search product
+  const getSearchProduct = (query) => {
+    axios.get(`${API_URL}/products/search?keyword=${query}`).then(({ data }) => {
+      setResults(data.products);
+    });
+  };
+
+  // search function
+  const handleInputChange = (e) => {
+    setQuery(e.target.value);
+    if (query && query.length > 1) {
+      if (query.length % 2 === 0) {
+        getSearchProduct(query);
+      }
+    }
+  };
+
+  // calculate qty cart
+  const qtyCart = () => {
+    let totalQty = 0
+    if (cartUser.length > 0) {
+      cartUser.forEach((item) => {
+        totalQty += parseInt(item.qty)
+      })
+      return totalQty
+    }
+  };
+
+  // limit name function
+  const limitName = (item) => {
+    if (item.length > 20) {
+      let newName = ''
+      let splited = [...item]
+      splited.forEach((e, idx) => {
+        if (idx < 20) {
+          newName += e
+        }
+      })
+      newName += '...'
+      return newName
+    } else {
+      return item
+    }
+  }
+
+  // render dropdown cart
+  const cartIsEmpty = () => {
+    if (cartUser.length > 0) {
+      return <>
+        <DropdownItem ><span style={{ letterSpacing: 1.5 }}>Total ({qtyCart()})</span><span style={{ float: 'right' }}><Link style={{ color: '#27ae60', fontWeight: 500, letterSpacing: 2 }} to='/cart'>Cart</Link></span></DropdownItem>
+        <DropdownItem divider style={{ marginLeft: 7, marginRight: 7 }} />
+        <div style={{ overflowY: 'auto', width: 400, maxHeight: 500 }}>
+          {renderCart()}
+        </div>
+      </>
+
+    } else {
+      return <><CardBody>
+        <img src={no_data} className='image' width='10%' />
+        <p style={{ textAlign: 'center', marginTop: 10 }}>Keranjang Kamu Kosong Nih ☹</p>
+      </CardBody>
+      </>
+    }
+  }
+
+  const renderCart = () => {
+    return cartUser.map((item, index) => {
+      return (
+        <>
+          <Link to={`/product-detail?idproduct=${item.idproduct}`} style={{ textDecoration: 'none', color: 'black' }} onClick={toggleCart}>
+            <div className="card-tranparent d-flex"  >
+              <div style={{ flex: 1 }}>
+                <img src={item.product_image} width='100%' />
+              </div>
+              <div style={{ flex: 2, marginTop: 20 }}>
+                <p style={{ fontSize: 14, fontWeight: '600' }}>{limitName(item.name)}</p>
+                <p style={{ fontSize: 12 }}>{item.qty} {item.satuan} </p>
+              </div>
+              <div style={{ flex: 1, marginTop: 50, color: '#f39c12', fontWeight: '500' }}>
+                <p >Rp.{item.price_pcs.toLocaleString()}</p>
+              </div>
+            </div>
+          </Link>
+          <DropdownItem divider style={{ marginLeft: 7, marginRight: 7 }} />
+        </>
+      )
+    })
+  }
+
   return (
-    <div className='border-bottom'>
+    <div className='border-bottom' >
       <div className='container pt-2 pb-0'>
         <div className='row'>
           <div className='col-3 align-self-center'>
@@ -51,30 +230,43 @@ const NavbarCom = (props) => {
             </Link>
           </div>
           <div className='col-6 align-self-center'>
-            <InputGroup>
-              <Input
-                placeholder='contoh : paracetamol'
-                type='text'
-                onChange={(e) => setSearch(e.target.value)}
-                required
-              />
-              <InputGroupAddon addonType='append'>
-                <Button color='secondary' onClick={handleSearch}>
-                  Search
-                </Button>
-              </InputGroupAddon>
-            </InputGroup>
+            <form>
+              <div className='mb-3'>
+                <input
+                  className='form-control'
+                  placeholder='Search for ...'
+                  ref={searchRef}
+                  onChange={handleInputChange}
+                />
+              </div>
+              <Suggestions results={results} />
+            </form>
           </div>
           <div className='col-3 align-selft-center'>
             <div className='d-flex justify-content-end right-menu'>
               <ul className='right-menu_ul'>
+
+                {/* CART menu */}
                 <li className='mr-4'>
-                  <Link to='/'>
-                    <i className='large material-icons right-menu_icon'>
-                      shopping_cart
+                  <Dropdown isOpen={dropCartOpen} toggle={toggleCart}>
+                    <DropdownToggle
+                      style={{
+                        backgroundColor: 'transparent',
+                        border: 'none',
+                      }}
+                      onClick={() => dispatch(getCart(iduser))}
+                    >
+                      <i className='large material-icons right-menu_icon'>
+                        shopping_cart
                     </i>
-                  </Link>
+                      <Badge color='danger' pill style={{ marginRight: -30, position: 'relative', left: -15, top: -20 }}>{qtyCart()}</Badge>
+                    </DropdownToggle>
+                    <DropdownMenu right style={{ borderRadius: 5 }} >
+                      {cartIsEmpty()}
+                    </DropdownMenu>
+                  </Dropdown>
                 </li>
+
                 <li className='ml-2'>
                   <Link to='/'>
                     <i className='large material-icons right-menu_icon'>
@@ -82,8 +274,10 @@ const NavbarCom = (props) => {
                     </i>
                   </Link>
                 </li>
+
                 <li className='ml-3'>
-                  <Link to='/'>
+                  {/* user role menu */}
+                  {role === 'admin' ? (
                     <Dropdown isOpen={dropdownOpen} toggle={toggle}>
                       <DropdownToggle
                         style={{
@@ -96,17 +290,58 @@ const NavbarCom = (props) => {
                         </i>
                       </DropdownToggle>
                       <DropdownMenu right>
-                        <DropdownItem onClick={openModal}>Login</DropdownItem>
+                        <DropdownItem>Dashboard Admin</DropdownItem>
                       </DropdownMenu>
+
                     </Dropdown>
-                  </Link>
+                  ) : (
+                      <Dropdown isOpen={dropdownOpen} toggle={toggle}>
+                        <DropdownToggle
+                          style={{
+                            backgroundColor: 'transparent',
+                            border: 'none',
+                          }}
+                        >
+                          <i className='large material-icons right-menu_icon'>
+                            input
+                        </i>
+                        </DropdownToggle>
+                        <DropdownMenu right>
+                          <DropdownItem onClick={openModal}>Login</DropdownItem>
+                        </DropdownMenu>
+
+                      </Dropdown>
+                    )}
                 </li>
               </ul>
             </div>
           </div>
         </div>
       </div>
-      <Login visible={visible} closeModal={closeModal} />
+
+      {/* login modal */}
+      <Login
+        visible={visible}
+        closeModal={closeModal}
+        onSubmit={onSubmit}
+        openAlert={openAlert}
+        closeAlert={closeAlert}
+        visibleAlert={visibleAlert}
+        errorStatus={errorStatus}
+        errorMessage={errorMessage}
+        openForgotPassword={openForgotPassword}
+      />
+
+      {/* forgot password modal */}
+      <ForgotPassword
+        visibleForgotPassword={visibleForgotPassword}
+        visibleAlert={visibleAlertForgotPassword}
+        closeForgotPassword={closeForgotPassword}
+        openForgotPassword={openForgotPassword}
+        errorStatus={errorStatus}
+        errorMessage={errorMessage}
+        submit={onForgotPassword}
+      />
     </div>
   );
 };

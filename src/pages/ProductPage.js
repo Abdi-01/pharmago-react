@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getProducts } from '../redux/actions/productsAction';
+import { getProducts } from '../redux/actions';
 import { Col, Container, Dropdown, DropdownItem, DropdownMenu, DropdownToggle, Row } from 'reactstrap';
 import CardProduct from '../components/cardProduct';
 
@@ -33,7 +33,7 @@ const ProductPage = (props) => {
 
     // Sorting Function
     const sortProduct = (tipe, urutan) => {
-        if (tipe == 'Nama' && urutan == 'ASC') {
+        if (tipe === 'Nama' && urutan === 'ASC') {
             products.sort((a, b) => {
                 let nameA = a.name.toUpperCase(); // ignore upper and lowercase
                 let nameB = b.name.toUpperCase(); // ignore upper and lowercase
@@ -46,7 +46,7 @@ const ProductPage = (props) => {
                 // names must be equal
                 return 0;
             })
-        } else if (tipe == 'Nama' && urutan == 'DESC') {
+        } else if (tipe === 'Nama' && urutan === 'DESC') {
             products.sort((a, b) => {
                 let nameA = a.name.toUpperCase();
                 let nameB = b.name.toUpperCase();
@@ -58,7 +58,7 @@ const ProductPage = (props) => {
                 }
                 return 0;
             })
-        } else if (tipe == 'Harga' && urutan == 'ASC') {
+        } else if (tipe === 'Harga' && urutan === 'ASC') {
             products.sort((a, b) => {
                 let priceA = parseInt(a.price);
                 let priceB = parseInt(b.price);
@@ -70,7 +70,7 @@ const ProductPage = (props) => {
                 }
                 return 0;
             })
-        } else if (tipe == 'Harga' && urutan == 'DESC') {
+        } else if (tipe === 'Harga' && urutan === 'DESC') {
             products.sort((a, b) => {
                 let priceA = parseInt(a.price);
                 let priceB = parseInt(b.price);
@@ -110,7 +110,7 @@ const ProductPage = (props) => {
                             {dropdownName}
                         </DropdownToggle>
                         <DropdownMenu>
-                            <DropdownItem onClick={() => dispatch(getProducts())}>Kesesuaian</DropdownItem>
+                            {/* <DropdownItem onClick={() => dispatch(getProducts())}>Kesesuaian</DropdownItem> */}
                             <DropdownItem onClick={() => sortProduct('Nama', 'ASC')}>Nama Produk (A-Z)</DropdownItem>
                             <DropdownItem onClick={() => sortProduct('Nama', 'DESC')}>Nama Produk (Z-A)</DropdownItem>
                             <DropdownItem onClick={() => sortProduct('Harga', 'ASC')}>Harga Terendah</DropdownItem>

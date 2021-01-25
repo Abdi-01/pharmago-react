@@ -1,4 +1,5 @@
 import Home from './Home';
 import SearchResult from './SearchResults';
+import ResetPassword from './ResetPassword';
 
-export { Home, SearchResult };
+export { Home, SearchResult, ResetPassword };
