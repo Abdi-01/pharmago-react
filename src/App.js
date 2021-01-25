@@ -5,15 +5,13 @@ import ProductPage from './pages/ProductPage';
 import ProductDetail from './pages/ProductDetail';
 import { Footer, NavbarCom } from './components';
 import {
-  Home,
-  Register,
-  ResetPassword,
-  NotFound,
-  DashboardAdmin,
+  Home, Register, ResetPassword, NotFound,
+  DashboardAdmin, Verify
 } from './pages';
 import { useDispatch, useSelector } from 'react-redux';
-import { keepLogin } from './redux/actions';
-import Verify from './pages/Verify';
+import { getProducts, keepLogin } from './redux/actions';
+import CartPage from './pages/CartPage';
+import TransactionPage from './pages/TransactionPage';
 
 const App = (props) => {
   const dispatch = useDispatch();
@@ -37,17 +35,18 @@ const App = (props) => {
         <Route path='/' exact component={Home} />
         <Route path='/products' component={ProductPage} />
         <Route path='/product-detail' component={ProductDetail} />
+        <Route path='/cart' component={CartPage} />
         <Route path='/register' component={Register} />
         <Route path='/reset-password/:iduser' component={ResetPassword} />
         <Route path='/verify/:token' component={Verify} />
+        <Route path='/order-list' component={TransactionPage} />
         {token && role === 'admin' && (
           <Route path='/admin' component={DashboardAdmin} />
         )}
-
         <Route path='*' component={NotFound} />
-      </Switch>
+      </Switch >
       <Footer />
-    </div>
+    </div >
   );
 };
 
