@@ -22,14 +22,6 @@ const CartPage = (props) => {
     const toggleModal = () => setModal(!modal);
     const [redirect, setRedirect] = useState(false);
 
-    useEffect(() => {
-        dispatch(getCustomProducts())
-        dispatch(getDefaultAddress(localStorage.getItem('refreshcart')))
-        dispatch(getCart(localStorage.getItem('refreshcart')))
-        setTempCart(cartUser)
-        console.log('cek tempcart: ', tempCart)
-    }, [])
-
     const { iduser, cartUser, customProducts, defaultAddress, idpayment } = useSelector(state => {
         return {
             iduser: state.usersReducer.iduser,
@@ -39,6 +31,15 @@ const CartPage = (props) => {
             idpayment: state.transactionsReducer.idpayment
         }
     })
+
+    useEffect(() => {
+        dispatch(getCustomProducts())
+        // dispatch(getDefaultAddress(iduser))
+        // dispatch(getCart(iduser))
+        setTempCart(cartUser)
+        console.log('cek tempcart: ', tempCart)
+    }, [])
+
 
 
     // -----------------------------------------
@@ -77,9 +78,9 @@ const CartPage = (props) => {
                                 </i>
                             </div>
                             <div style={{ flex: 3, marginTop: -20 }}>
-                                <Button color='warning' style={{ marginTop: 15, borderRadius: 15, width: 30, height: 30, letterSpacing: 2, textAlign: 'center' }} onClick={() => {btQty("dec", item.qty, item.idcart); dispatch(getCart(item.iduser))}}><p style={{ marginLeft: -3, marginTop: -14, fontWeight: 'bolder', fontSize: 25 }}>-</p></Button>
+                                <Button color='warning' style={{ marginTop: 15, borderRadius: 15, width: 30, height: 30, letterSpacing: 2, textAlign: 'center' }} onClick={() => { btQty("dec", item.qty, item.idcart); dispatch(getCart(item.iduser)) }}><p style={{ marginLeft: -3, marginTop: -14, fontWeight: 'bolder', fontSize: 25 }}>-</p></Button>
                                 <Button color='success' disabled outline style={{ marginTop: 15, borderRadius: 15, width: 60, height: 30, letterSpacing: 2, textAlign: 'center', marginLeft: 5, marginRight: 5 }}><p style={{ marginTop: -5, fontWeight: 'bolder', fontSize: 16, color: 'black' }}>{item.qty}</p></Button>
-                                <Button color='warning' style={{ marginTop: 15, borderRadius: 15, width: 30, height: 30, letterSpacing: 2, textAlign: 'center', marginRight: 10 }} onClick={() => {btQty("inc", item.qty, item.idcart); dispatch(getCart(item.iduser))}}><p style={{ marginLeft: -7, marginTop: -14, fontWeight: 'bolder', fontSize: 25 }}>+</p></Button>
+                                <Button color='warning' style={{ marginTop: 15, borderRadius: 15, width: 30, height: 30, letterSpacing: 2, textAlign: 'center', marginRight: 10 }} onClick={() => { btQty("inc", item.qty, item.idcart); dispatch(getCart(item.iduser)) }}><p style={{ marginLeft: -7, marginTop: -14, fontWeight: 'bolder', fontSize: 25 }}>+</p></Button>
                             </div>
 
                         </div>
@@ -121,7 +122,7 @@ const CartPage = (props) => {
             console.log("saya decrement")
             dispatch(updateQty(qty, "dec", idcart))
         }
-    }    
+    }
     // Total Price1 Function
     const totalPrice1 = () => {
         let totalPrice = 0
@@ -301,7 +302,7 @@ const CartPage = (props) => {
                 <Card style={{ marginBottom: 100 }}>
                     <CardBody style={{ overflowY: 'auto', maxHeight: '50vh', letterSpacing: 1.5 }}>
                         <FormGroup>
-                            <h6 style={{ display: 'flex'}}><span style={{ flex: 2}}>Bahan Resep :</span><span style={{float: 'right'}}>Dosis : x<input type='text' style={{width: 50, textAlign: 'center'}}  /> </span></h6>
+                            <h6 style={{ display: 'flex' }}><span style={{ flex: 2 }}>Bahan Resep :</span><span style={{ float: 'right' }}>Dosis : x<input type='text' style={{ width: 50, textAlign: 'center' }} /> </span></h6>
                             {renderListInput(inputList)}
                             {/* {renderInputResep()} */}
                         </FormGroup>

@@ -59,9 +59,8 @@ export const updateQty = (qty, type, id) => {
             }
 
             let update = await Axios.patch(API_URL + `/cart/updQty/${id}`, { qty })
+            
             console.log("cek update data: ", update.data)
-
-
         } catch (error) {
             console.log(error)
         }
