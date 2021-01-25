@@ -9,14 +9,15 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Provider } from 'react-redux';
 import { applyMiddleware, createStore } from 'redux';
 import { Reducer } from './redux/reducers';
-import ReduxThunk from 'redux-thunk'
+import ReduxThunk from 'redux-thunk';
+import { createBrowserHistory } from 'history';
 
-
-const storeReducer = createStore(Reducer, {}, applyMiddleware(ReduxThunk))
+const storeReducer = createStore(Reducer, {}, applyMiddleware(ReduxThunk));
+const history = createBrowserHistory();
 
 ReactDOM.render(
   <Provider store={storeReducer}>
-    <BrowserRouter>
+    <BrowserRouter history={history}>
       <App />
     </BrowserRouter>
   </Provider>,

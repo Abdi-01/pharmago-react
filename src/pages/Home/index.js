@@ -3,16 +3,15 @@ import { CardCategory, Banner } from '../../components';
 import { useDispatch } from 'react-redux';
 import { getProducts } from '../../redux/actions/productsAction';
 
-
 const Home = () => {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
   useEffect(() => {
-      dispatch(getProducts())
-  }, [])
+    dispatch(getProducts());
+  }, []);
 
   return (
-    <div className='container mt-2'>
+    <div className='container'>
       <div
         className='text-center w-75 m-auto'
         style={{

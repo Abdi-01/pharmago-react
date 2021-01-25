@@ -11,9 +11,10 @@ const INITIAL_STATE = {
 
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
+    case 'REGISTER_SUCCESS':
     case 'LOGIN_SUCCESS':
     case 'KEEP_LOGIN':
-      // console.log('success', action.payload);
+      console.log('success', action.payload.user[0].role);
       return {
         ...state,
         iduser: action.payload.user[0].iduser,
@@ -25,14 +26,16 @@ export default (state = INITIAL_STATE, action) => {
         errorStatus: action.payload.error,
         errorMessage: action.payload.message,
       };
+    case 'ACCOUNT_VERIFY_SUCCESS':
     case 'FORGOT_PASSWORD_SUCCESS':
     case 'RESET_PASSWORD_SUCCESS':
-      // console.log('success forgot password', action.payload);
+      console.log('reducer', action.payload);
       return {
         ...state,
         errorMessage: action.payload.message,
         errorStatus: action.payload.error,
       };
+    case 'REGISTER_FAILED':
     case 'FORGOT_PASSWORD_FAILED':
     case 'LOGIN_FAILED':
       // console.log('fail forgot password', action.payload);
@@ -41,6 +44,8 @@ export default (state = INITIAL_STATE, action) => {
         errorMessage: action.payload.message,
         errorStatus: action.payload.error,
       };
+    case 'LOGOUT':
+      return INITIAL_STATE;
     default:
       return state;
   }

@@ -19,7 +19,15 @@ const Banner = () => {
     { name: 'banner-3', image: Banner3 },
   ];
   return (
-    <div className='mt-5'>
+    <div style={{ marginTop: '5rem' }}>
+      <div className='text-center'>
+        <h4 className=' mb-4'>Penawaran Menarik</h4>
+        <p>
+          Sehat lebih mudah dengan berbagai penawaran dan promo terbaru untuk
+          kamu
+        </p>
+        <hr className='mt-4 mb-4' />
+      </div>
       <Swiper
         id='main'
         tag='section'

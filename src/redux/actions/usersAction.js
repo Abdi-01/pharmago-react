@@ -1,6 +1,53 @@
 import Axios from 'axios';
 import { API_URL } from '../../support/urlApi';
 
+export const registerUser = (data, cb) => {
+  return async (dispatch) => {
+    try {
+      const results = await Axios.post(API_URL + `/users/register`, { data });
+      console.log('check registerUser', results);
+      dispatch({
+        type: 'REGISTER_SUCCESS',
+        payload: results.data,
+      });
+      cb();
+    } catch (error) {
+      console.log(error.response);
+      dispatch({
+        type: 'REGISTER_FAILED',
+        payload: error.response.data,
+      });
+    }
+  };
+};
+
+export const accountVerify = (otp, token, cb) => {
+  return async (dispatch) => {
+    try {
+      const headers = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+
+      const results = await Axios.patch(
+        API_URL + `/users/account-verify`,
+        {
+          otp,
+        },
+        headers
+      );
+      dispatch({
+        type: 'ACCOUNT_VERIFY_SUCCESS',
+        payload: results.data,
+      });
+      cb();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+};
+
 export const loginUser = (email, password, cb) => {
   return async (dispatch) => {
     try {
@@ -80,6 +127,20 @@ export const keepLogin = () => {
           payload: results.data,
         });
       }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+};
+
+export const logoutUser = (cb) => {
+  return async (dispatch) => {
+    try {
+      localStorage.removeItem('token');
+      dispatch({
+        type: 'LOGOUT',
+      });
+      cb();
     } catch (error) {
       console.log(error);
     }

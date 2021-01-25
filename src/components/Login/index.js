@@ -7,7 +7,6 @@ import './login.css';
 
 const Login = (props) => {
   const { register, errors, handleSubmit } = useForm();
-  // console.log('errorStatus login page', props.errorStatus, props.visibleAlert);
   return (
     <Modal
       visible={props.visible}
@@ -21,7 +20,14 @@ const Login = (props) => {
           <h4>Login PharmaGO</h4>
           <p style={{ color: 'grey', fontSize: '14px' }}>
             Belum punya akun?
-            <span style={{ color: 'black' }}> Daftar</span>
+            <span
+              style={{ color: 'black' }}
+              onClick={props.linkToRegister}
+              role='button'
+            >
+              {' '}
+              Daftar
+            </span>
           </p>
         </div>
         {/* alert message  */}
