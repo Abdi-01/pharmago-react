@@ -7,6 +7,8 @@ import { NavbarCom } from './components';
 import { Home, ResetPassword, SearchResult } from './pages';
 import { useDispatch } from 'react-redux';
 import { getProducts, keepLogin } from './redux/actions';
+import CartPage from './pages/CartPage';
+import TransactionPage from './pages/TransactionPage';
 
 const App = (props) => {
   const dispatch = useDispatch();
@@ -24,7 +26,9 @@ const App = (props) => {
         <Route path='/search' component={SearchResult} />
         <Route path='/products' component={ProductPage} />
         <Route path='/product-detail' component={ProductDetail} />
+        <Route path='/cart' component={CartPage} />
         <Route path='/reset-password/:iduser' component={ResetPassword} />
+        <Route path='/order-list' component={TransactionPage} />
       </Switch>
     </div >
   )

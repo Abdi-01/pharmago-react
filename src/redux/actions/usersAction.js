@@ -14,6 +14,25 @@ export const loginUser = (email, password, cb) => {
       });
       cb();
       localStorage.setItem('token', results.data.token);
+      const headers = {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      };
+      if (localStorage.getItem('token')) {
+        let get = await Axios.get(API_URL + `/cart/${results.data.user[0].iduser}`, headers)
+        localStorage.setItem(`refreshcart`, results.data.user[0].iduser);
+        dispatch({
+          type: 'GET_CART',
+          payload: get.data.cartUser
+        });
+        let results = await Axios.get(API_URL + `/users/defaultAddress/${results.data.user[0].iduser}`);
+        dispatch({
+          type: 'GET_DEFAULT_ADDRESS',
+          payload: results.data.defaultAddress
+        });
+
+      }
     } catch (error) {
       console.log(error.response.data);
       dispatch({
@@ -85,3 +104,17 @@ export const keepLogin = () => {
     }
   };
 };
+
+export const getDefaultAddress = (iduser) => {
+  return async (dispatch) => {
+    try {
+      let results = await Axios.get(API_URL + `/users/defaultAddress/${iduser}`);
+      dispatch({
+        type: 'GET_DEFAULT_ADDRESS',
+        payload: results.data,
+      });
+    } catch (error) {
+      console.log(error)
+    }
+  }
+}

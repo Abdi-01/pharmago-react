@@ -7,6 +7,7 @@ const INITIAL_STATE = {
   isActive: false,
   errorMessage: '',
   errorStatus: null,
+  defaultAddress: []
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -41,6 +42,11 @@ export default (state = INITIAL_STATE, action) => {
         errorMessage: action.payload.message,
         errorStatus: action.payload.error,
       };
+    case 'GET_DEFAULT_ADDRESS':
+      console.log('defaultadress', action.payload);
+      return {
+        defaultAddress: action.payload.defaultAddress
+      }
     default:
       return state;
   }

@@ -10,8 +10,8 @@ const CardProduct = ({ children }) => {
                     <CardImg top width='100%' src={children.product_image} alt={children.name} />
                     <CardBody>
                         <CardTitle tag='h6' style={{ color: 'black' }}>{children.name}</CardTitle>
-                        <CardSubtitle className="text-muted" style={{ fontSize: 13, fontStyle: 'italic', marginBottom: 5 }}>Per Kemasan</CardSubtitle>
-                        <CardText style={{ color: 'black', fontWeight: 'bold' }}>Rp{children.price.toLocaleString()},-</CardText>
+                        <CardSubtitle className="text-muted" style={{ fontSize: 13, fontStyle: 'italic', marginBottom: 5 }}>Per {children.satuan}</CardSubtitle>
+                        <CardText style={{ color: 'black', fontWeight: 'bold' }}>Rp{children.price_pcs.toLocaleString()},-</CardText>
                         <Button color='success' className="btn-block" outline style={{ borderRadius: 20, letterSpacing: 2 }}>Beli</Button>
                     </CardBody>
                 </Link>
