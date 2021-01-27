@@ -1,25 +1,27 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Link, Redirect, useHistory } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { LogoPharmaGo, no_data } from '../../assets';
 import { useDispatch, useSelector } from 'react-redux';
 import './navbar.css';
 import { Login, ForgotPassword, Suggestions } from '..';
+import { API_URL } from '../../support/urlApi';
 import {
   Dropdown,
   DropdownToggle,
   DropdownMenu,
   DropdownItem,
-  Button,
   Badge,
-  Card,
   CardBody,
-  CardImg,
 } from 'reactstrap';
 import axios from 'axios';
-import { loginUser, forgotPassword, logoutUser, getCart } from '../../redux/actions';
-import { API_URL } from '../../support/urlApi';
+import {
+  loginUser,
+  forgotPassword,
+  logoutUser,
+  getCart,
+} from '../../redux/actions';
 
-const NavbarCom = (props) => {
+const Navbar = (props) => {
   const [results, setResults] = useState([]);
   const [query, setQuery] = useState('');
   const [loading, setLoading] = useState(false);
@@ -33,29 +35,34 @@ const NavbarCom = (props) => {
   );
   const [dropCartOpen, setDropCartOpen] = useState(false);
 
-
   const searchRef = useRef(null);
   const dispatch = useDispatch();
   const toggle = () => setDropdownOpen((prevState) => !prevState);
   const toggleCart = () => setDropCartOpen((prevState) => !prevState);
   const history = useHistory();
 
-  const { errorStatus, errorMessage, iduser, role, products, cartUser } = useSelector(
-    ({ usersReducer, ProductsReducer, CartReducer }) => {
-      return {
-        errorStatus: usersReducer.errorStatus,
-        errorMessage: usersReducer.errorMessage,
-        role: usersReducer.role,
-        iduser: usersReducer.iduser,
-        products: ProductsReducer.products,
-        cartUser: CartReducer.cartUser
-      };
-    }
-  );
+  const {
+    errorStatus,
+    errorMessage,
+    iduser,
+    role,
+    cartUser,
+    name,
+  } = useSelector(({ usersReducer, ProductsReducer, CartReducer }) => {
+    return {
+      errorStatus: usersReducer.errorStatus,
+      errorMessage: usersReducer.errorMessage,
+      role: usersReducer.role,
+      iduser: usersReducer.iduser,
+      name: usersReducer.name,
+      products: ProductsReducer.products,
+      cartUser: usersReducer.cartUser,
+    };
+  });
 
   useEffect(() => {
-    dispatch(getCart(localStorage.getItem('refreshcart')))
-  }, [])
+    dispatch(getCart(localStorage.getItem('refreshcart')));
+  }, []);
 
   // submit for login form
   const onSubmit = (data) => {
@@ -74,6 +81,29 @@ const NavbarCom = (props) => {
       setVisibleAlert(false);
     }, 2000);
   };
+
+  // const onSubmit = (data) => {
+  //   const { email, password } = data;
+  //   dispatch(loginUser(email, password));
+  //   setVisibleAlert(true);
+  //   setTimeout(() => {
+  //     setVisibleAlert(false);
+  //     setVisible(false);
+  //   }, 1000);
+  // };
+
+  // useEffect(() => {
+  //   if (iduser) {
+  //     // show modal alert
+  //     setVisibleAlert(false);
+  //     // close modal login
+  //     setTimeout(() => {
+  //       setVisible(false);
+  //     }, 1000);
+  //   }
+  //   // redirect to homepage
+  //   history.push('/');
+  // }, [iduser]);
 
   //  open/close modal alert
   const openAlert = () => {
@@ -160,76 +190,106 @@ const NavbarCom = (props) => {
 
   // calculate qty cart
   const qtyCart = () => {
-    let totalQty = 0
+    let totalQty = 0;
     if (cartUser.length > 0) {
       cartUser.forEach((item) => {
-        totalQty += parseInt(item.qty)
-      })
-      return totalQty
+        totalQty += parseInt(item.qty);
+      });
+      return totalQty;
     }
   };
 
   // limit name function
   const limitName = (item) => {
     if (item.length > 20) {
-      let newName = ''
-      let splited = [...item]
+      let newName = '';
+      let splited = [...item];
       splited.forEach((e, idx) => {
         if (idx < 20) {
-          newName += e
+          newName += e;
         }
-      })
-      newName += '...'
-      return newName
+      });
+      newName += '...';
+      return newName;
     } else {
-      return item
+      return item;
     }
-  }
+  };
 
   // render dropdown cart
   const cartIsEmpty = () => {
     if (cartUser.length > 0) {
-      return <>
-        <DropdownItem ><span style={{ letterSpacing: 1.5 }}>Total ({qtyCart()})</span><span style={{ float: 'right' }}>
-          <Link style={{ color: '#27ae60', fontWeight: 500, letterSpacing: 2 }} to='/cart'>Cart</Link></span></DropdownItem>
-        <DropdownItem divider style={{ marginLeft: 7, marginRight: 7 }} />
-        <div style={{ overflowY: 'auto', width: 400, maxHeight: 500 }}>
-          {renderCart()}
-        </div>
-      </>
-
+      return (
+        <>
+          <DropdownItem>
+            <span style={{ letterSpacing: 1.5 }}>Total ({qtyCart()})</span>
+            <span style={{ float: 'right' }}>
+              <Link
+                style={{ color: '#27ae60', fontWeight: 500, letterSpacing: 2 }}
+                to='/cart'
+              >
+                Cart
+              </Link>
+            </span>
+          </DropdownItem>
+          <DropdownItem divider style={{ marginLeft: 7, marginRight: 7 }} />
+          <div style={{ overflowY: 'auto', width: 400, maxHeight: 500 }}>
+            {renderCart()}
+          </div>
+        </>
+      );
     } else {
-      return <><CardBody>
-        <img src={no_data} className='image' width='10%' />
-        <p style={{ textAlign: 'center', marginTop: 10 }}>Keranjang Kamu Kosong Nih ☹</p>
-      </CardBody>
-      </>
+      return (
+        <>
+          <CardBody>
+            <img src={no_data} className='image' width='10%' />
+            <p style={{ textAlign: 'center', marginTop: 10 }}>
+              Keranjang Kamu Kosong Nih ☹
+            </p>
+          </CardBody>
+        </>
+      );
     }
-  }
+  };
 
   const renderCart = () => {
     return cartUser.map((item, index) => {
       return (
         <>
-          <Link to={`/product-detail?idproduct=${item.idproduct}`} style={{ textDecoration: 'none', color: 'black' }} onClick={toggleCart}>
-            <div className="card-tranparent d-flex"  >
+          <Link
+            to={`/product-detail?idproduct=${item.idproduct}`}
+            style={{ textDecoration: 'none', color: 'black' }}
+            onClick={toggleCart}
+          >
+            <div className='card-tranparent d-flex'>
               <div style={{ flex: 1 }}>
                 <img src={item.product_image} width='100%' />
               </div>
               <div style={{ flex: 2, marginTop: 20 }}>
-                <p style={{ fontSize: 14, fontWeight: '600' }}>{limitName(item.name)}</p>
-                <p style={{ fontSize: 12 }}>{item.qty} {item.satuan} </p>
+                <p style={{ fontSize: 14, fontWeight: '600' }}>
+                  {limitName(item.name)}
+                </p>
+                <p style={{ fontSize: 12 }}>
+                  {item.qty} {item.satuan}{' '}
+                </p>
               </div>
-              <div style={{ flex: 1, marginTop: 50, color: '#f39c12', fontWeight: '500' }}>
-                <p >Rp.{item.price_pcs.toLocaleString()}</p>
+              <div
+                style={{
+                  flex: 1,
+                  marginTop: 50,
+                  color: '#f39c12',
+                  fontWeight: '500',
+                }}
+              >
+                <p>Rp.{item.price_pcs.toLocaleString()}</p>
               </div>
             </div>
           </Link>
           <DropdownItem divider style={{ marginLeft: 7, marginRight: 7 }} />
         </>
-      )
-    })
-  }
+      );
+    });
+  };
 
   // Link to Register
   const linkToRegister = () => {
@@ -238,12 +298,7 @@ const NavbarCom = (props) => {
   };
 
   const onLogout = () => {
-    dispatch(
-      logoutUser(() => {
-        setLoading(true);
-        history.push('/');
-      })
-    );
+    dispatch(logoutUser());
   };
 
   return (
@@ -269,7 +324,6 @@ const NavbarCom = (props) => {
           <div className='col-3 align-selft-center'>
             <div className='d-flex justify-content-end right-menu'>
               <ul className='right-menu_ul'>
-
                 {/* CART menu */}
                 <li className='mr-4'>
                   <Dropdown isOpen={dropCartOpen} toggle={toggleCart}>
@@ -282,10 +336,21 @@ const NavbarCom = (props) => {
                     >
                       <i className='large material-icons right-menu_icon'>
                         shopping_cart
-                    </i>
-                      <Badge color='danger' pill style={{ marginRight: -30, position: 'relative', left: -15, top: -20 }}>{qtyCart()}</Badge>
+                      </i>
+                      <Badge
+                        color='danger'
+                        pill
+                        style={{
+                          marginRight: -30,
+                          position: 'relative',
+                          left: -15,
+                          top: -20,
+                        }}
+                      >
+                        {qtyCart()}
+                      </Badge>
                     </DropdownToggle>
-                    <DropdownMenu right style={{ borderRadius: 5 }} >
+                    <DropdownMenu right style={{ borderRadius: 5 }}>
                       {cartIsEmpty()}
                     </DropdownMenu>
                   </Dropdown>
@@ -300,8 +365,8 @@ const NavbarCom = (props) => {
 
                 <li className='ml-3'>
                   {/* user role menu */}
-                  {iduser ?
-                    role === "admin" ? (
+                  {iduser ? (
+                    role === 'admin' ? (
                       <Dropdown isOpen={dropdownOpen} toggle={toggle}>
                         <DropdownToggle
                           style={{
@@ -311,51 +376,57 @@ const NavbarCom = (props) => {
                         >
                           <i className='large material-icons right-menu_icon'>
                             account_circle
-                        </i>
+                          </i>
                         </DropdownToggle>
                         <DropdownMenu right>
+                          <DropdownItem style={{ fontWeight: 'bold' }}>
+                            {name}
+                          </DropdownItem>
+                          <DropdownItem divider />
                           <DropdownItem>Dashboard Admin</DropdownItem>
                           <DropdownItem onClick={onLogout}>Logout</DropdownItem>
                         </DropdownMenu>
                       </Dropdown>
                     ) : (
-                        <Dropdown isOpen={dropdownOpen} toggle={toggle}>
-                          <DropdownToggle
-                            style={{
-                              backgroundColor: 'transparent',
-                              border: 'none',
-                            }}
-                          >
-                            <i className='large material-icons right-menu_icon'>
-                              account_circle
-                        </i>
-                          </DropdownToggle>
-                          <DropdownMenu right>
-                            <DropdownItem>Profile</DropdownItem>
-                            <DropdownItem onClick={onLogout}>Logout</DropdownItem>
-                          </DropdownMenu>
-                        </Dropdown>
-                      )
-                    : (
                       <Dropdown isOpen={dropdownOpen} toggle={toggle}>
                         <DropdownToggle
                           style={{
                             backgroundColor: 'transparent',
                             border: 'none',
-                            color: 'black',
-                            fontWeight: 'bold',
+                            alignSelf: 'center',
                           }}
-                          onClick={openModal}
                         >
                           <i className='large material-icons right-menu_icon'>
-                            input
-                        </i>
+                            account_circle
+                          </i>
                         </DropdownToggle>
-                        {/* <DropdownMenu right>
-                        <DropdownItem onClick={openModal}>Login</DropdownItem>
-                      </DropdownMenu> */}
+                        <DropdownMenu right>
+                          <DropdownItem style={{ fontWeight: 'bold' }}>
+                            {name}
+                          </DropdownItem>
+                          <DropdownItem divider />
+                          <DropdownItem>Profile</DropdownItem>
+                          <DropdownItem onClick={onLogout}>Logout</DropdownItem>
+                        </DropdownMenu>
                       </Dropdown>
-                    )}
+                    )
+                  ) : (
+                    <Dropdown isOpen={dropdownOpen} toggle={toggle}>
+                      <DropdownToggle
+                        style={{
+                          backgroundColor: 'transparent',
+                          border: 'none',
+                          color: 'black',
+                          fontWeight: 'bold',
+                        }}
+                        onClick={openModal}
+                      >
+                        <i className='large material-icons right-menu_icon'>
+                          input
+                        </i>
+                      </DropdownToggle>
+                    </Dropdown>
+                  )}
                 </li>
               </ul>
             </div>
@@ -391,6 +462,4 @@ const NavbarCom = (props) => {
   );
 };
 
-export default NavbarCom;
-
-// 41b304dfe5d68753df30e526f2b2aecc
+export default Navbar;

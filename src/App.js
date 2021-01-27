@@ -3,10 +3,17 @@ import './App.css';
 import { Route, Switch } from 'react-router-dom';
 import ProductPage from './pages/ProductPage';
 import ProductDetail from './pages/ProductDetail';
-import { Footer, NavbarCom } from './components';
+import { Footer, Navbar } from './components';
 import {
-  Home, Register, ResetPassword, NotFound,
-  DashboardAdmin, Verify
+  Home,
+  Register,
+  ResetPassword,
+  NotFound,
+  DashboardAdmin,
+  Verify,
+  AdminProduct,
+  AdminProductDetail,
+  AdminAddProduct,
 } from './pages';
 import { useDispatch, useSelector } from 'react-redux';
 import { getProducts, keepLogin } from './redux/actions';
@@ -18,6 +25,7 @@ const App = (props) => {
 
   useEffect(() => {
     dispatch(keepLogin());
+    dispatch(getProducts());
   }, []);
 
   const { role } = useSelector(({ usersReducer }) => {
@@ -26,27 +34,43 @@ const App = (props) => {
     };
   });
 
-  let token = localStorage.getItem('token');
-
   return (
     <div>
-      <NavbarCom />
+      {role !== 'admin' && <Navbar />}
       <Switch>
-        <Route path='/' exact component={Home} />
+        <Route
+          path='/'
+          exact
+          component={role === 'admin' ? DashboardAdmin : Home}
+        />
         <Route path='/products' component={ProductPage} />
         <Route path='/product-detail' component={ProductDetail} />
-        <Route path='/cart' component={CartPage} />
         <Route path='/register' component={Register} />
         <Route path='/reset-password/:iduser' component={ResetPassword} />
         <Route path='/verify/:token' component={Verify} />
-        <Route path='/order-list' component={TransactionPage} />
-        {token && role === 'admin' && (
-          <Route path='/admin' component={DashboardAdmin} />
+
+        {/* user role */}
+        {role === 'admin' ? (
+          <>
+            {' '}
+            <Route path='/admin' component={DashboardAdmin} />
+            <Route path='/admin-product' component={AdminProduct} />
+            <Route
+              path='/admin-product-detail'
+              component={AdminProductDetail}
+            />
+            <Route path='/admin-add-product' component={AdminAddProduct} />
+          </>
+        ) : (
+          <>
+            <Route path='/order-list' component={TransactionPage} />
+            <Route path='/cart' component={CartPage} />
+          </>
         )}
         <Route path='*' component={NotFound} />
-      </Switch >
+      </Switch>
       <Footer />
-    </div >
+    </div>
   );
 };
 

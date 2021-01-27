@@ -48,6 +48,57 @@ export const accountVerify = (otp, token, cb) => {
   };
 };
 
+// export const loginUser = (email, password) => {
+//   return async (dispatch) => {
+//     try {
+//       const results = await Axios.post(API_URL + `/users/login`, {
+//         email,
+//         password,
+//       });
+//       dispatch({
+//         type: 'LOGIN_SUCCESS',
+//         payload: results.data,
+//       });
+//       localStorage.setItem('token', results.data.token);
+//       const headers = {
+//         headers: {
+//           Authorization: `Bearer ${localStorage.getItem('token')}`,
+//         },
+//       };
+//       // console.log('check error results', results.status);
+//       // check jika status 200
+//       if (results.status === 200) {
+//         let get = await Axios.get(
+//           API_URL + `/cart/${results.data.user[0].iduser}`,
+//           headers
+//         );
+//         localStorage.setItem(`refreshcart`, results.data.user[0].iduser);
+//         dispatch({
+//           type: 'GET_CART',
+//           payload: get.data.cartUser,
+//         });
+//         let results = await Axios.get(
+//           API_URL + `/users/defaultAddress/${results.data.user[0].iduser}`
+//         );
+//         dispatch({
+//           type: 'GET_DEFAULT_ADDRESS',
+//           payload: results.data.defaultAddress,
+//         });
+//       }
+//       dispatch({
+//         type: 'LOGIN_SUCCESS',
+//         payload: results.data,
+//       });
+//     } catch (err) {
+//       // console.log('check error login', err);
+//       dispatch({
+//         type: 'LOGIN_FAILED',
+//         payload: err.response ? err.response.data : err.message,
+//       });
+//     }
+//   };
+// };
+
 export const loginUser = (email, password, cb) => {
   return async (dispatch) => {
     try {
@@ -67,20 +118,25 @@ export const loginUser = (email, password, cb) => {
         },
       };
       if (results) {
-        let get = await Axios.get(API_URL + `/cart/${results.data.user[0].iduser}`, headers)
+        let get = await Axios.get(
+          API_URL + `/cart/${results.data.user[0].iduser}`,
+          headers
+        );
         localStorage.setItem(`refreshcart`, results.data.user[0].iduser);
         dispatch({
           type: 'GET_CART',
-          payload: get.data.cartUser
+          payload: get.data.cartUser,
         });
-        let results = await Axios.get(API_URL + `/users/defaultAddress/${results.data.user[0].iduser}`);
+        let results = await Axios.get(
+          API_URL + `/users/defaultAddress/${results.data.user[0].iduser}`
+        );
         dispatch({
           type: 'GET_DEFAULT_ADDRESS',
-          payload: results.data.defaultAddress
+          payload: results.data.defaultAddress,
         });
       }
     } catch (error) {
-      console.log(error);
+      console.log(error.response);
       dispatch({
         type: 'LOGIN_FAILED',
         payload: error.response ? error.response.data : error.message,
@@ -154,25 +210,26 @@ export const keepLogin = () => {
 export const getDefaultAddress = (iduser) => {
   return async (dispatch) => {
     try {
-      let results = await Axios.get(API_URL + `/users/defaultAddress/${iduser}`);
-      console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>', results.data)
+      let results = await Axios.get(
+        API_URL + `/users/defaultAddress/${iduser}`
+      );
+      console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>', results.data);
       dispatch({
         type: 'GET_DEFAULT_ADDRESS',
         payload: results.data,
       });
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
-}
-export const logoutUser = (cb) => {
+  };
+};
+export const logoutUser = () => {
   return async (dispatch) => {
     try {
       localStorage.removeItem('token');
       dispatch({
         type: 'LOGOUT',
       });
-      cb();
     } catch (error) {
       console.log(error);
     }

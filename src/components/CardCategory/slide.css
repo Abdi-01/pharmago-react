@@ -26,16 +26,17 @@
 }
 
 .slides .slick-slide {
-  background-color: #37a073;
+  background-color: #51c2d5;
   border-radius: 20px;
-  margin: 2px;
+  margin: 8px;
   box-sizing: content-box;
   padding: 10px 0;
+  box-shadow: 3px 3px 5px 6px rgb(233, 219, 219);
 }
 
 .slides .slick-slide:hover {
   cursor: pointer;
-  background-color: #11df86;
+  background-color: #bbf1fa;
   text-decoration: none;
   transition: background-color 1s;
 }

@@ -1,10 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { NavbarAdmin } from '../../components';
 
 const DashboardAdmin = () => {
   return (
-    <div className='container mt-3'>
-      <h5 className='text-center'>Selamat Datang di Dashboard Admin</h5>
-      <hr />
+    <div>
+      <NavbarAdmin />
+      <div className='row d-flex justify-content-center align-items-center mt-5'>
+        <div className='col-8'>
+          <h3 className='text-center mb-5'>
+            Selamat Datang di Dashboard Admin
+          </h3>
+          <hr />
+        </div>
+      </div>
     </div>
   );
 };

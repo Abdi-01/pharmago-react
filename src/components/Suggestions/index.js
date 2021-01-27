@@ -31,7 +31,10 @@ const Suggestions = ({ results, searchRef, handleInputChange, openSearch }) => {
       </DropdownToggle>
       {console.log('test', openSearch)}
       {openSearch && (
-        <DropdownMenu className='mt-2 w-100' style={{ border: 'none' }}>
+        <DropdownMenu
+          className='mt-2 w-100 shadow-lg'
+          style={{ border: 'none', borderRadius: 20 }}
+        >
           {results.map((item) => (
             <div>
               <Link
@@ -42,15 +45,17 @@ const Suggestions = ({ results, searchRef, handleInputChange, openSearch }) => {
                   <div className='d-flex align-items-center'>
                     <img
                       src={item.product_image}
-                      width='20%'
+                      width='10%'
                       style={{
                         border: '1px solid #ced4da',
-                        borderRadius: '20px',
+                        borderRadius: '10px',
                         marginRight: '2rem',
                       }}
                     />
                     <div>
-                      <p>{item.name.toUpperCase()}</p>
+                      <p style={{ fontWeight: 'bold', fontSize: '14px' }}>
+                        {item.name.toUpperCase()}
+                      </p>
                     </div>
                   </div>
                 </DropdownItem>
