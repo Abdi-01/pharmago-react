@@ -1,13 +1,14 @@
 const INITIAL_STATE = {
   iduser: '',
-  name: '',
+  name: null,
   email: '',
   handphone: '',
   role: '',
   isActive: false,
   errorMessage: '',
   errorStatus: null,
-  defaultAddress: []
+  defaultAddress: [],
+  cartUser: [],
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -15,7 +16,7 @@ export default (state = INITIAL_STATE, action) => {
     case 'REGISTER_SUCCESS':
     case 'LOGIN_SUCCESS':
     case 'KEEP_LOGIN':
-      console.log('success', action.payload.user[0].role);
+      console.log('success', action.payload.message);
       return {
         ...state,
         iduser: action.payload.user[0].iduser,
@@ -39,7 +40,7 @@ export default (state = INITIAL_STATE, action) => {
     case 'REGISTER_FAILED':
     case 'FORGOT_PASSWORD_FAILED':
     case 'LOGIN_FAILED':
-      // console.log('fail forgot password', action.payload);
+      console.log('fail forgot password', action.payload);
       return {
         ...state,
         errorMessage: action.payload.message,
@@ -48,8 +49,14 @@ export default (state = INITIAL_STATE, action) => {
     case 'GET_DEFAULT_ADDRESS':
       // console.log('defaultadress', action.payload);
       return {
-        defaultAddress: action.payload.defaultAddress
-      }
+        defaultAddress: action.payload.defaultAddress,
+      };
+    case 'GET_CART':
+      console.log('GET_CART', action.payload);
+      return {
+        ...state,
+        cartUser: action.payload,
+      };
     case 'LOGOUT':
       return INITIAL_STATE;
     default:

@@ -1,5 +1,5 @@
-import Axios from "axios"
-import { API_URL } from "../../support/urlApi"
+import Axios from 'axios';
+import { API_URL } from '../../support/urlApi';
 
 export const addToCart = (data) => {
     return async (dispatch) => {
@@ -12,7 +12,7 @@ export const addToCart = (data) => {
             console.log(error)
         }
     }
-}
+};
 
 export const addCustomCart = (cartCustom, cartCustom_detail) => {
     return async (dispatch) => {
@@ -73,7 +73,7 @@ export const getCustomCart = () => {
             console.log(error)
         }
     }
-}
+};
 
 export const deleteCart = (idcart) => {
     return async (dispatch) => {
@@ -97,19 +97,18 @@ export const deleteCustomCart = (idcartCustom) => {
             console.log(error)
         }
     }
-}
+};
 
 export const updateQty = (qty, type, id) => {
     return async (dispatch) => {
         try {
             if (type === 'inc') {
-                qty += 1
+                qty += 1;
             } else if (type === 'dec') {
-                qty -= 1
+                qty -= 1;
             }
 
-            let update = await Axios.patch(API_URL + `/cart/updQty/${id}`, { qty })
-
+            let update = await Axios.patch(API_URL + `/cart/updQty/${id}`, { qty });
             console.log("cek update data: ", update.data.cartUser)
             dispatch({
                 type: 'GET_CART',
@@ -135,3 +134,4 @@ export const updateNote = (idcart, note) => {
         }
     }
 }
+

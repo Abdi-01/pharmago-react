@@ -28,6 +28,9 @@ export default (state = INITIAL_STATE, action) => {
                 ...state,
                 customCart: action.payload
             }
+        case "RESET_CART":
+            console.log("RESET REDUCER: ", INITIAL_STATE)
+            return INITIAL_STATE
         default:
             return state;
     }
