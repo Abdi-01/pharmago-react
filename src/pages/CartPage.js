@@ -2,20 +2,22 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, Redirect } from 'react-router-dom';
 import { Button, Card, CardBody, CardText, CardTitle, Container, DropdownItem, FormGroup, Input, Label, Modal, ModalBody, ModalHeader, UncontrolledTooltip } from 'reactstrap';
-import { addTransaction, deleteCart, getCart, getCustomProducts, getDefaultAddress, payment, updateQty } from '../redux/actions';
-import { payment_confirmation } from '../assets';
+import { addCustomCart, addTransaction, deleteCart, getCart, getCustomProducts, getDefaultAddress, payment, getCustomCart, updateNote, updateQty, deleteCustomCart, keepLogin } from '../redux/actions';
 import Swal from 'sweetalert2';
+import CardCart from '../components/cardCart';
+import ModalPayment from '../components/modalPayment';
 
 const CartPage = (props) => {
     const dispatch = useDispatch()
 
-    // cart umum
-    const [tempCart, setTempCart] = useState([]);
-    const [inputList, setInputList] = useState([]);
+    // cart resep function
+    const [resepList, setResepList] = useState([]);
+    const [qtyCapsule, setQtyCapsule] = useState(10) //tbcartCustom : qty_kapsul
+    const [subtotal, setSubtotal] = useState(0) //tbcartCustom : total_harga
 
-    // cart resep
-    const [qty1, setQty1] = useState(0);
-    const [value, setValue] = useState(''); //coba-coba
+    // cart resep button
+    const [confirmRecipe, setConfirmRecipe] = useState(false) // disable tombol konfirmasi
+    const [disableInput, setDisableInput] = useState(false)
 
     // modal
     const [modal, setModal] = useState(false);
@@ -23,72 +25,28 @@ const CartPage = (props) => {
     const [redirect, setRedirect] = useState(false);
 
     useEffect(() => {
+        dispatch(keepLogin())
         dispatch(getCustomProducts())
-        dispatch(getDefaultAddress(localStorage.getItem('refreshcart')))
-        dispatch(getCart(localStorage.getItem('refreshcart')))
-        setTempCart(cartUser)
-        console.log('cek tempcart: ', tempCart)
+        dispatch(getDefaultAddress())
+        dispatch(getCustomCart())
+        dispatch(getCart())
     }, [])
 
-    const { iduser, cartUser, customProducts, defaultAddress, idpayment } = useSelector(state => {
+    const { iduser, cartUser, customProducts, defaultAddress, idpayment, customCart } = useSelector(state => {
         return {
             iduser: state.usersReducer.iduser,
             cartUser: state.CartReducer.cartUser,
             customProducts: state.ProductsReducer.customProducts,
             defaultAddress: state.usersReducer.defaultAddress[0],
-            idpayment: state.transactionsReducer.idpayment
+            idpayment: state.transactionsReducer.idpayment,
+            customCart: state.CartReducer.customCart
         }
     })
 
 
-    // -----------------------------------------
 
+    // ====================================================================================
     // KERANJANG UMUM
-
-    // Render card
-    const renderCart = (iduser) => {
-        if (cartUser.length > 0) {
-            console.log('cek default address: ', defaultAddress)
-            return cartUser.map((item, index) => {
-                return (
-                    <>
-                        <Link to={`/product-detail?idproduct=${item.idproduct}`} style={{ textDecoration: 'none', color: 'black' }}>
-                            <div className="card-tranparent d-flex"  >
-                                <div style={{ flex: 1 }}>
-                                    <img src={item.product_image} width='90%' />
-                                </div>
-                                <div style={{ flex: 4, marginTop: 30 }}>
-                                    <p >{item.name}</p>
-                                    <p style={{ fontWeight: 'bold' }}>Rp.{item.price_pcs.toLocaleString()}</p>
-                                </div>
-                            </div>
-                        </Link>
-                        <div className='d-flex'>
-                            <div style={{ flex: 5 }}>
-                                <p style={{ marginLeft: 10, color: '#2ecc71', fontWeight: '400' }}  >Add Notes for this item</p>
-                            </div>
-                            <div style={{ flex: 1 }}>
-                                <i className='large material-icons right-menu_icon'
-                                    id='trashbinImage'
-                                    style={{ fontSize: 30, marginTop: -8, cursor: 'pointer' }}
-                                    onClick={() => { dispatch(deleteCart(item.idcart)); dispatch(getCart(iduser)) }}
-                                >
-                                    delete
-                                </i>
-                            </div>
-                            <div style={{ flex: 3, marginTop: -20 }}>
-                                <Button color='warning' style={{ marginTop: 15, borderRadius: 15, width: 30, height: 30, letterSpacing: 2, textAlign: 'center' }} onClick={() => {btQty("dec", item.qty, item.idcart); dispatch(getCart(item.iduser))}}><p style={{ marginLeft: -3, marginTop: -14, fontWeight: 'bolder', fontSize: 25 }}>-</p></Button>
-                                <Button color='success' disabled outline style={{ marginTop: 15, borderRadius: 15, width: 60, height: 30, letterSpacing: 2, textAlign: 'center', marginLeft: 5, marginRight: 5 }}><p style={{ marginTop: -5, fontWeight: 'bolder', fontSize: 16, color: 'black' }}>{item.qty}</p></Button>
-                                <Button color='warning' style={{ marginTop: 15, borderRadius: 15, width: 30, height: 30, letterSpacing: 2, textAlign: 'center', marginRight: 10 }} onClick={() => {btQty("inc", item.qty, item.idcart); dispatch(getCart(item.iduser))}}><p style={{ marginLeft: -7, marginTop: -14, fontWeight: 'bolder', fontSize: 25 }}>+</p></Button>
-                            </div>
-
-                        </div>
-                        <DropdownItem divider style={{ marginLeft: 7, marginRight: 7 }} />
-                    </>
-                )
-            })
-        }
-    }
     // Empty Cart Condition
     const isCartEmpty = () => {
         if (cartUser.length > 0) {
@@ -112,16 +70,17 @@ const CartPage = (props) => {
             </>
         }
     }
-    // Qty modification function
-    const btQty = (type, qty, idcart) => {
-        if (type === 'inc') {
-            console.log("saya increment", qty, idcart)
-            dispatch(updateQty(qty, "inc", idcart))
-        } else if (type == 'dec') {
-            console.log("saya decrement")
-            dispatch(updateQty(qty, "dec", idcart))
+    // Render card
+    const renderCart = (iduser) => {
+        if (cartUser.length > 0) {
+            // console.log('cek default address: ', defaultAddress)
+            return cartUser.map((item, index) => {
+                return (
+                    <CardCart key={index}>{item}</CardCart>
+                )
+            })
         }
-    }    
+    }
     // Total Price1 Function
     const totalPrice1 = () => {
         let totalPrice = 0
@@ -141,8 +100,7 @@ const CartPage = (props) => {
         }
     }
 
-    // -----------------------------------------
-
+    // ====================================================================================
     // KERANJANG CUSTOM ORDER
 
     // Titlecase Function
@@ -154,54 +112,111 @@ const CartPage = (props) => {
             }
         );
     }
-    // 
-    // Render Dropdown Product
-    const renderCustomProduct = () => {
-        if (customProducts) {
-            return customProducts.map((item, index) => {
-                return <option key={index} value={item.name}>{toTitleCase(item.name)} ({item.satuan})</option>
+
+    const renderListInput = () => {
+        if (customCart.length > 0) {
+            return customCart.map((item, index) => {
+                return (
+                    <div className='d-flex my-2'>
+                        <Input disabled={true} type='select' name={`select`} defaultValue={item.name} style={{ flex: 8, marginRight: 20, letterSpacing: 1.5 }} >
+                            <option>{toTitleCase(item.name)}</option>
+                        </Input>
+                        <Input disabled={true} type='text' defaultValue={item.qty_per_satuan} style={{ flex: 1, textAlign: 'center', letterSpacing: 1.5 }} />
+                    </div>
+                )
+            })
+
+        } else {
+            return resepList.map((e, index) => {
+                return (
+                    <div className='d-flex my-2'>
+                        <Input disabled={false} type='select' name={`select`} onChange={e => handleBahan(e, index)} style={{ flex: 8, marginRight: 20, letterSpacing: 1.5 }} >
+                            <option > - Pilih Bahan - </option>
+                            {renderCustomProduct()}
+                        </Input>
+                        <Input disabled={false} type='text' onChange={e => { handleQty(e, index); subTotalResep() }} style={{ flex: 1, textAlign: 'center', letterSpacing: 1.5 }} />
+                    </div>
+                )
             })
         }
     }
 
-    const renderInputResep = (id) => {   //setstate dibuat objek sajakah?
-        console.log(value)
-        return <div className='d-flex my-2'>
-            <Input type='select' name={`select${id}`} id={`bahan${id}`} onChange={e => setValue(e.currentTarget.value)} style={{ flex: 8, marginRight: 20, letterSpacing: 1.5 }} >
-                <option > - Pilih Bahan - </option>
-                {renderCustomProduct()}
-            </Input>
-            <Input type='text' placeholder='-qty-' innerRef={e => setQty1(e)} style={{ flex: 1, textAlign: 'center', letterSpacing: 1.5 }} />
-            {/* <p style={{ flex: 1, marginLeft: 10 }}>{renderSatuanList()}</p> */}
-        </div>
+    const renderCustomProduct = () => {
+        if (customProducts) {
+            return customProducts.map((item, index) => {
+                return <option key={index} value={item.idproduct}>{toTitleCase(item.name)} ({item.satuan})</option>
+            })
+        }
     }
 
-    const renderListInput = (inputList) => {
-        // console.log('cekinputlist', inputList.length)
-        // console.log('cekinputlist', inputList)
-        return inputList.map(e => {
-            return renderInputResep(parseInt(e))
+    const handleBahan = (e, index) => {
+        console.log('handlebahan: e => ', e.target.value, index)
+        let list = [...resepList]
+        list[index].idproduct = e.target.value
+
+    }
+
+    const handleQty = (e, index) => {
+        console.log('handleqty: e => ', e.target.value, index)
+        let list = [...resepList]
+        list[index].qty = e.target.value
+        console.log('cek reseplist handleqty: ', resepList)
+    }
+
+    const handleResep = (iduser) => {
+        let list = [...resepList]
+
+        list.push({ iduser, idproduct: null, qty: null })
+        setResepList(list)
+    }
+
+    const subTotalResep = (e) => {
+        let list = [...resepList]
+        let subtotal = 0
+        if (customProducts) {
+            customProducts.forEach((item) => {
+                list.forEach((element) => {
+                    if (parseInt(item.idproduct) === parseInt(element.idproduct)) {
+                        subtotal += (element.qty * item.price_per_satuan)
+                    }
+                })
+            })
+        }
+        console.log('satuan', subtotal)
+        console.log('qtycapsule', qtyCapsule)
+        console.log('subtotal', subtotal * qtyCapsule)
+        setSubtotal(subtotal * qtyCapsule)
+    }
+
+    const btConfirmRecipe = () => {
+        // resepList : [iduser, idproduct, qty]
+        let cartCustom = [{ iduser: iduser ? iduser : resepList[0].iduser, qty_kapsul: qtyCapsule, total_harga: subtotal }]
+        let cartCustom_detail = []
+        let obj = {}
+
+        resepList.forEach((item, index) => {
+            obj['idproduct'] = item.idproduct
+            obj['qty_per_satuan'] = item.qty
+            customProducts.forEach(e => {
+                if (parseInt(e.idproduct) === parseInt(item.idproduct)) {
+                    obj['total_price_satuan'] = (e.price_per_satuan * item.qty)
+                }
+            })
+            cartCustom_detail.push(obj)
+            obj = {}
         })
+
+        console.log('cek bawaan button konfirmasi resep: ', cartCustom, cartCustom_detail)
+        dispatch(addCustomCart(cartCustom, cartCustom_detail))
     }
 
-    // let satuanList = []
-    // const renderSatuanList = () => {
-    //     customProducts.forEach(e => {
-    //         let satuan = []
-    //         satuan.push(e.name)
-    //         satuan.push(e.satuan)
-    //         satuanList.push(satuan)
-    //     })
-    //     console.log('ceksatuanlist: ', satuanList)
-    // }
-
-    // -----------------------------------------
-
+    // ====================================================================================
     // INFORMASI PEMBAYARAN & PENGIRIMAN
     // render alamat pengiriman
     const renderAlamat = () => {
         if (defaultAddress) {
-            return <><CardTitle><h6>Alamat Pengiriman</h6></CardTitle>
+            return <>
+                <CardTitle><h6>Alamat Pengiriman</h6></CardTitle>
                 <DropdownItem divider />
                 <CardTitle style={{ fontWeight: 'bold' }}>{defaultAddress.name}</CardTitle>
                 <CardText>{defaultAddress.handphone}</CardText>
@@ -212,44 +227,99 @@ const CartPage = (props) => {
                 <>
                     <Button color='secondary' outline>Pilih Alamat Lain</Button>
                     <Button color='secondary' outline style={{ float: 'right' }}>+ Tambah Alamat</Button>
-                </></>
+                </>
+            </>
         }
     }
 
 
-    // -----------------------------------------
-
+    // ====================================================================================
     // CHECKOUT
     const totalHarga = () => {
-        let totalHarga = totalPrice1() + 0
+        let totalHarga = 0
+        {
+            customCart.length > 0 ?
+                totalHarga = totalPrice1() + customCart[0].total_harga
+                :
+                totalHarga = totalPrice1()
+        }
         return totalHarga
     }
     const totalOngkir = () => {
         return 10000
     }
     const checkOut = () => {
-        let checkOut = []
+        let checkoutcart = []
+        let checkoutcustom = []
         let obj = {}
         let idCart = []
+        let idcartCustom = 0
         let ongkir = totalOngkir()
-        let total_payment = (totalOngkir() + totalHarga())
+        let total_payment = 0
+        let transaction_type = ''
 
 
-        cartUser.forEach((item, index) => {
-            obj["idproduct"] = item.idproduct
-            obj["iduser"] = item.iduser
-            obj["note"] = item.note
-            obj["qty"] = item.qty
-            obj["total_price"] = item.qty * item.price_pcs
-            checkOut.push(obj)
-            // checkOut.push(item)
-            idCart.push(item.idcart)
-            obj = {}
-        })
+        if (customCart.length > 0 && cartUser.length > 0) {
+            console.log('cek 2 tipe terbaca')
+            cartUser.forEach((item, index) => {
+                obj["idproduct"] = item.idproduct
+                obj["iduser"] = item.iduser
+                obj["note"] = item.note
+                obj["qty_qo"] = item.qty
+                obj["total_price"] = item.qty * item.price_pcs
+                checkoutcart.push(obj)
+                idCart.push(item.idcart)
+                obj = {}
+            })
 
-        console.log("cek bawaan button checkout: ", checkOut, idCart, ongkir, total_payment, defaultAddress.iduser_address)
-        dispatch(addTransaction(checkOut, idCart, ongkir, total_payment, defaultAddress.iduser_address))
-        // dispatch(getTransaction(iduser))
+            customCart.forEach((item) => {
+                obj["idproduct"] = item.idproduct
+                obj["iduser"] = item.iduser
+                obj["qty_co"] = item.qty_per_satuan * item.qty_kapsul
+                obj["total_price"] = item.total_price_satuan * item.qty_kapsul
+                checkoutcustom.push(obj)
+                obj = {}
+            })
+            idcartCustom = customCart[0].idcartCustom
+            transaction_type = 'ALL'
+            total_payment = (totalOngkir() + totalHarga() + subtotal)
+            console.log("cek bawaan button checkout ALL: ", checkoutcart, checkoutcustom, idCart, idcartCustom, ongkir, total_payment, defaultAddress.iduser_address, transaction_type)
+            dispatch(addTransaction(checkoutcart, idCart, ongkir, total_payment, defaultAddress.iduser_address, transaction_type, checkoutcustom, idcartCustom))
+        } 
+        else if (cartUser.length > 0) {
+            console.log('cartuser terbaca')
+            cartUser.forEach((item, index) => {
+                obj["idproduct"] = item.idproduct
+                obj["iduser"] = item.iduser
+                obj["note"] = item.note
+                obj["qty_qo"] = item.qty
+                obj["total_price"] = item.qty * item.price_pcs
+                checkoutcart.push(obj)
+                idCart.push(item.idcart)
+                obj = {}
+            })
+            total_payment = (totalOngkir() + totalHarga())
+            transaction_type = 'QO'
+            console.log("cek bawaan button checkout: ", checkoutcart, idCart, ongkir, total_payment, defaultAddress.iduser_address, transaction_type)
+            dispatch(addTransaction(checkoutcart, idCart, ongkir, total_payment, defaultAddress.iduser_address, transaction_type))
+            
+        } 
+        else if (customCart.length > 0) {
+            customCart.forEach((item) => {
+                obj["idproduct"] = item.idproduct
+                obj["iduser"] = item.iduser
+                obj["qty_co"] = item.qty_per_satuan * item.qty_kapsul
+                obj["total_price"] = item.total_price_satuan * item.qty_kapsul
+                checkoutcustom.push(obj)
+                obj = {}
+            })
+            idcartCustom = customCart[0].idcartCustom
+            total_payment = (totalOngkir()  + subtotal)
+            transaction_type = 'CO'
+            console.log("cek bawaan button checkout custom: ", checkoutcustom, idcartCustom, ongkir, total_payment, defaultAddress.iduser_address, transaction_type)
+
+            dispatch(addTransaction(checkoutcustom, idcartCustom, ongkir, total_payment, defaultAddress.iduser_address, transaction_type))
+        }
     }
     const paymentSuccess = () => {
         let timerInterval
@@ -301,26 +371,63 @@ const CartPage = (props) => {
                 <Card style={{ marginBottom: 100 }}>
                     <CardBody style={{ overflowY: 'auto', maxHeight: '50vh', letterSpacing: 1.5 }}>
                         <FormGroup>
-                            <h6 style={{ display: 'flex'}}><span style={{ flex: 2}}>Bahan Resep :</span><span style={{float: 'right'}}>Dosis : x<input type='text' style={{width: 50, textAlign: 'center'}}  /> </span></h6>
-                            {renderListInput(inputList)}
-                            {/* {renderInputResep()} */}
+                            <h6 style={{ display: 'flex', marginBottom: 20 }}>
+                                <span style={{ flex: 3 }}>Bahan Resep :</span>
+                                <span style={{ flex: 2, textAlign: 'right' }}>
+                                    <span style={{ paddingRight: 5 }}>Jumlah :</span>
+                                    <input
+                                        type='text'
+                                        style={{ paddingRight: 5 }}
+                                        disabled={disableInput}
+                                        onKeyUp={subTotalResep}
+                                        defaultValue={qtyCapsule}
+                                        onChange={e => setQtyCapsule(e.target.value)} style={{ width: 50, textAlign: 'center' }}
+                                    />
+                                    <span style={{ marginLeft: 10 }}>Kapsul</span>
+                                </span>
+                            </h6>
+                            {renderListInput()}
                         </FormGroup>
-                        <Button block outline color='secondary' onClick={() => { setInputList(arr => [...arr, `${arr.length + 1}`]); console.log(qty1) }}>+ Bahan Resep</Button>
+                        {
+                            customCart.length > 0 ?
+                                <Button block outline color='danger'
+                                    onClick={() => {
+                                        dispatch(deleteCustomCart(customCart[0].idcartCustom));
+                                        setResepList([]);
+                                        window.location.reload(false)
+                                    }}>Hapus Resep</Button>
+                                :
+                                <Button block outline color='secondary' onClick={() => handleResep(iduser)}>+ Bahan Resep</Button>
+                            // <Button block outline color='secondary' onClick={() => handleResep(cartUser[0].iduser)}>+ Bahan Resep</Button>
+                        }
                     </CardBody>
                     <DropdownItem divider />
                     <CardBody style={{ fontWeight: 'bold' }}>
-                        <CardText><span >Subtotal</span><span style={{ float: 'right' }}>Rp 0</span></CardText>
+                        <CardText><span >Subtotal</span><span style={{ float: 'right' }}>Rp {customCart.length > 0 ? customCart[0].total_harga.toLocaleString() : subtotal.toLocaleString()}</span></CardText>
+                    </CardBody>
+                    <CardBody>
+                        {
+                            resepList &&
+                            resepList.length >= 2 &&
+                            <Button disabled={confirmRecipe} block color='success'
+                                onClick={() => {
+                                    btConfirmRecipe();
+                                    setConfirmRecipe(!confirmRecipe);
+                                    setDisableInput(true);
+                                    dispatch(getCustomCart())
+                                }}>Konfirmasi Resep</Button>
+                        }
                     </CardBody>
                 </Card>
             </div>
 
             {/* INFORMASI CHECKOUT */}
-            <div style={{ flex: 1, marginTop: 20, marginLeft: 30 }}>
+            <div style={{ flex: 1, marginTop: 60, marginLeft: 30 }}>
                 <Card>
                     <CardBody>
                         <CardTitle><h5>Ringkasan Pembayaran</h5></CardTitle>
                         <CardText><span>Total Harga</span><span style={{ float: 'right' }}>Rp{totalHarga().toLocaleString()}</span></CardText>
-                        <CardText><span>Ongkos Kirim</span><span style={{ float: 'right' }}>{totalOngkir().toLocaleString()}</span></CardText>
+                        <CardText><span>Ongkos Kirim</span><span style={{ float: 'right' }}>Rp{totalOngkir().toLocaleString()}</span></CardText>
                         <DropdownItem divider />
                         <CardText style={{ fontSize: 20, fontWeight: '500' }}><span>Total Tagihan</span><span style={{ float: 'right' }}>Rp{(totalHarga() + totalOngkir()).toLocaleString()}</span></CardText>
                     </CardBody>
@@ -337,7 +444,6 @@ const CartPage = (props) => {
                     </>
                 </CardBody>
                 <Button color='danger' block style={{ marginTop: 20 }} onClick={() => { checkOut(); toggleModal() }}>
-                    {/* <Button color='danger' block style={{ marginTop: 20 }} onClick={() => toggleModal()}> */}
                     <i className='material-icons' style={{ fontSize: 25, color: 'white', position: 'relative', top: 5, right: 25 }}>verified_user</i>
                     Konfirmasi Pesanan
                 </Button>
@@ -345,19 +451,8 @@ const CartPage = (props) => {
 
             {toolTipBin()}
 
-            <Modal isOpen={modal} toggle={toggleModal} style={{ marginTop: '15vw' }}>
-                <ModalHeader toggle={toggleModal}>Lakukan Konfirmasi Pembayaran</ModalHeader>
-                <ModalBody className='d-flex'>
-                    <img src={payment_confirmation} alt='payment' width='50%' style={{ flex: 1 }} />
-                    <div style={{ flex: 1, marginLeft: 20, marginRight: 20 }}>
-                        {/* <Button color="success" onClick={paymentSuccess} block style={{ marginTop: '4vw' }}>Konfirmasi Pembayaran</Button>{' '} */}
-                        <Button color="success" onClick={() => { dispatch(payment(idpayment)); paymentSuccess() }} block style={{ marginTop: '4vw' }}>Konfirmasi Pembayaran</Button>{' '}
-                        <Link to='order-list' style={{ textDecoration: 'none' }}>
-                            <Button block outline style={{ marginTop: '1vw' }}>Lihat Daftar Belanja</Button>
-                        </Link>
-                    </div>
-                </ModalBody>
-            </Modal>
+            {/* MODAL PAYMENT */}
+            <ModalPayment modal={modal} toggleModal={toggleModal} idpayment={idpayment} paymentSuccess={paymentSuccess} />
         </Container>
     )
 }

@@ -41,7 +41,7 @@ export const getCustomProducts = () => {
     return async (dispatch) => {
         try {
             let get = await Axios.get(API_URL + `/products/custom`)
-            console.log("productAction.js GetCustomProducts: ", get.data)
+            // console.log("productAction.js GetCustomProducts: ", get.data)
             dispatch({
                 type: 'GET_CUSTOM_PRODUCTS',
                 payload: get.data.customProducts

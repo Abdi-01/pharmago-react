@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Link, useHistory } from 'react-router-dom';
+import { Link, Redirect, useHistory } from 'react-router-dom';
 import { LogoPharmaGo, no_data } from '../../assets';
 import { useDispatch, useSelector } from 'react-redux';
 import './navbar.css';
@@ -16,14 +16,16 @@ import {
   CardImg,
 } from 'reactstrap';
 import axios from 'axios';
-import { loginUser, forgotPassword, getSearch, getCart } from '../../redux/actions';
+import { loginUser, forgotPassword, logoutUser, getCart, getDetail } from '../../redux/actions';
 import { API_URL } from '../../support/urlApi';
 
 const NavbarCom = (props) => {
   const [results, setResults] = useState([]);
   const [query, setQuery] = useState('');
+  const [loading, setLoading] = useState(false);
   const [visible, setVisible] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [openSearch, setOpenSearch] = useState(false);
   const [visibleAlert, setVisibleAlert] = useState(false);
   const [visibleForgotPassword, setVisibleForgotPassword] = useState(false);
   const [visibleAlertForgotPassword, setVisibleAlertForgotPassword] = useState(
@@ -38,7 +40,7 @@ const NavbarCom = (props) => {
   const toggleCart = () => setDropCartOpen((prevState) => !prevState);
   const history = useHistory();
 
-  const { errorStatus, errorMessage, iduser, role, products, cartUser } = useSelector(
+  const { errorStatus, errorMessage, iduser, role, products, cartUser, detailProduct } = useSelector(
     ({ usersReducer, ProductsReducer, CartReducer }) => {
       return {
         errorStatus: usersReducer.errorStatus,
@@ -46,13 +48,14 @@ const NavbarCom = (props) => {
         role: usersReducer.role,
         iduser: usersReducer.iduser,
         products: ProductsReducer.products,
-        cartUser: CartReducer.cartUser
+        cartUser: CartReducer.cartUser,
+        detailProduct: ProductsReducer.detailProduct
       };
     }
   );
 
   useEffect(() => {
-    dispatch(getCart(localStorage.getItem('refreshcart')))
+    dispatch(getCart())
   }, [])
 
   // submit for login form
@@ -63,6 +66,7 @@ const NavbarCom = (props) => {
         setVisibleAlert(true);
         setTimeout(() => {
           setVisible(false);
+          history.push('/');
         }, 1500);
       })
     );
@@ -133,18 +137,25 @@ const NavbarCom = (props) => {
 
   // get search product
   const getSearchProduct = (query) => {
-    axios.get(`${API_URL}/products/search?keyword=${query}`).then(({ data }) => {
-      setResults(data.products);
-    });
+    axios
+      .get(`${API_URL}/products/search?keyword=${query}`)
+      .then(({ data }) => {
+        setResults(data.products);
+      });
   };
 
-  // search function
+  // handle search
   const handleInputChange = (e) => {
-    setQuery(e.target.value);
-    if (query && query.length > 1) {
-      if (query.length % 2 === 0) {
-        getSearchProduct(query);
+    if (e.target.value.length > 0) {
+      setOpenSearch(true);
+      setQuery(e.target.value);
+      if (query && query.length > 1) {
+        if (query.length % 2 === 0) {
+          getSearchProduct(query);
+        }
       }
+    } else {
+      setOpenSearch(false);
     }
   };
 
@@ -180,7 +191,8 @@ const NavbarCom = (props) => {
   const cartIsEmpty = () => {
     if (cartUser.length > 0) {
       return <>
-        <DropdownItem ><span style={{ letterSpacing: 1.5 }}>Total ({qtyCart()})</span><span style={{ float: 'right' }}><Link style={{ color: '#27ae60', fontWeight: 500, letterSpacing: 2 }} to='/cart'>Cart</Link></span></DropdownItem>
+        <DropdownItem ><span style={{ letterSpacing: 1.5 }}>Total ({qtyCart()})</span><span style={{ float: 'right' }}>
+          <Link style={{ color: '#27ae60', fontWeight: 500, letterSpacing: 2 }} to='/cart'>Cart</Link></span></DropdownItem>
         <DropdownItem divider style={{ marginLeft: 7, marginRight: 7 }} />
         <div style={{ overflowY: 'auto', width: 400, maxHeight: 500 }}>
           {renderCart()}
@@ -220,8 +232,26 @@ const NavbarCom = (props) => {
     })
   }
 
+  // Link to Register
+  const linkToRegister = () => {
+    history.push('/register');
+    setVisible(false);
+  };
+
+  const onLogout = () => {
+    dispatch(
+      logoutUser(() => {
+        setLoading(true);
+        history.push('/');
+      })
+    );
+  };
+
   return (
-    <div className='border-bottom' >
+    <div
+      className='border-bottom pb-3 pt-3'
+      style={{ backgroundColor: 'white' }}
+    >
       <div className='container pt-2 pb-0'>
         <div className='row'>
           <div className='col-3 align-self-center'>
@@ -230,17 +260,12 @@ const NavbarCom = (props) => {
             </Link>
           </div>
           <div className='col-6 align-self-center'>
-            <form>
-              <div className='mb-3'>
-                <input
-                  className='form-control'
-                  placeholder='Search for ...'
-                  ref={searchRef}
-                  onChange={handleInputChange}
-                />
-              </div>
-              <Suggestions results={results} />
-            </form>
+            <Suggestions
+              results={results}
+              searchRef={searchRef}
+              handleInputChange={handleInputChange}
+              openSearch={openSearch}
+            />
           </div>
           <div className='col-3 align-selft-center'>
             <div className='d-flex justify-content-end right-menu'>
@@ -254,7 +279,7 @@ const NavbarCom = (props) => {
                         backgroundColor: 'transparent',
                         border: 'none',
                       }}
-                      onClick={() => dispatch(getCart(iduser))}
+                      onClick={() => dispatch(getCart())}
                     >
                       <i className='large material-icons right-menu_icon'>
                         shopping_cart
@@ -266,8 +291,7 @@ const NavbarCom = (props) => {
                     </DropdownMenu>
                   </Dropdown>
                 </li>
-
-                <li className='ml-2'>
+                <li className='mr-2'>
                   <Link to='/'>
                     <i className='large material-icons right-menu_icon'>
                       notifications
@@ -277,24 +301,8 @@ const NavbarCom = (props) => {
 
                 <li className='ml-3'>
                   {/* user role menu */}
-                  {role === 'admin' ? (
-                    <Dropdown isOpen={dropdownOpen} toggle={toggle}>
-                      <DropdownToggle
-                        style={{
-                          backgroundColor: 'transparent',
-                          border: 'none',
-                        }}
-                      >
-                        <i className='large material-icons right-menu_icon'>
-                          account_circle
-                        </i>
-                      </DropdownToggle>
-                      <DropdownMenu right>
-                        <DropdownItem>Dashboard Admin</DropdownItem>
-                      </DropdownMenu>
-
-                    </Dropdown>
-                  ) : (
+                  {iduser ?
+                    role === "admin" ? (
                       <Dropdown isOpen={dropdownOpen} toggle={toggle}>
                         <DropdownToggle
                           style={{
@@ -303,13 +311,50 @@ const NavbarCom = (props) => {
                           }}
                         >
                           <i className='large material-icons right-menu_icon'>
-                            input
+                            account_circle
                         </i>
                         </DropdownToggle>
                         <DropdownMenu right>
-                          <DropdownItem onClick={openModal}>Login</DropdownItem>
+                          <DropdownItem>Dashboard Admin</DropdownItem>
+                          <DropdownItem onClick={onLogout}>Logout</DropdownItem>
                         </DropdownMenu>
-
+                      </Dropdown>
+                    ) : (
+                        <Dropdown isOpen={dropdownOpen} toggle={toggle}>
+                          <DropdownToggle
+                            style={{
+                              backgroundColor: 'transparent',
+                              border: 'none',
+                            }}
+                          >
+                            <i className='large material-icons right-menu_icon'>
+                              account_circle
+                        </i>
+                          </DropdownToggle>
+                          <DropdownMenu right>
+                            <DropdownItem>Profile</DropdownItem>
+                            <DropdownItem onClick={onLogout}>Logout</DropdownItem>
+                          </DropdownMenu>
+                        </Dropdown>
+                      )
+                    : (
+                      <Dropdown isOpen={dropdownOpen} toggle={toggle}>
+                        <DropdownToggle
+                          style={{
+                            backgroundColor: 'transparent',
+                            border: 'none',
+                            color: 'black',
+                            fontWeight: 'bold',
+                          }}
+                          onClick={openModal}
+                        >
+                          <i className='large material-icons right-menu_icon'>
+                            input
+                        </i>
+                        </DropdownToggle>
+                        {/* <DropdownMenu right>
+                        <DropdownItem onClick={openModal}>Login</DropdownItem>
+                      </DropdownMenu> */}
                       </Dropdown>
                     )}
                 </li>
@@ -330,6 +375,7 @@ const NavbarCom = (props) => {
         errorStatus={errorStatus}
         errorMessage={errorMessage}
         openForgotPassword={openForgotPassword}
+        linkToRegister={linkToRegister}
       />
 
       {/* forgot password modal */}
@@ -347,3 +393,5 @@ const NavbarCom = (props) => {
 };
 
 export default NavbarCom;
+
+// 41b304dfe5d68753df30e526f2b2aecc

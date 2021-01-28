@@ -1,12 +1,13 @@
 import Axios from "axios"
 import { API_URL } from '../../support/urlApi';
 
-export const addTransaction = (checkout, idcart, ongkir, total_payment, iduser_address) => {
+export const addTransaction = (checkout, idcart, ongkir, total_payment, iduser_address, transaction_type, checkoutcustom, idcartCustom) => {
     return async (dispatch) => {
         try {
             console.log("cek body checkout (checkout): ", checkout)
+            console.log("cek body checkout (custom): ", checkoutcustom)
             console.log("cek body idcart (checkout): ", idcart)
-            let post = await Axios.post(API_URL + '/transactions/add', { checkout, idcart, ongkir, total_payment, iduser_address })
+            let post = await Axios.post(API_URL + '/transactions/add', { checkout, idcart, ongkir, total_payment, iduser_address, transaction_type, checkoutcustom, idcartCustom })
             console.log("cek addtransaction Action: ", post.data)
             dispatch({
                 type: "CHECKOUT",
@@ -17,6 +18,23 @@ export const addTransaction = (checkout, idcart, ongkir, total_payment, iduser_a
         }
     }
 }
+
+// export const addAllTransaction = (checkoutcart, checkoutcustom, idcart, idcartCustom, ongkir, total_payment, iduser_address, transaction_type) => {
+//     return async (dispatch) => {
+//         try {
+//             console.log("cek body checkout (cart): ", checkoutcart)
+//             console.log("cek body checkout (custom): ", checkoutcustom)
+//             let post = await Axios.post(API_URL + '/transactions/all', { checkoutcart, checkoutcustom, idcart, idcartCustom, ongkir, total_payment, iduser_address,transaction_type })
+//             console.log("cek addtransaction Action: ", post.data)
+//             dispatch({
+//                 type: "CHECKOUT",
+//                 payload: post.data
+//             })
+//         } catch (error) {
+//             console.log("checkout Action: ", error)
+//         }
+//     }
+// }
 
 export const getTransaction = (iduser) => {
     return async (dispatch) => {
