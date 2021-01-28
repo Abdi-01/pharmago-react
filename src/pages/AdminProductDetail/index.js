@@ -256,7 +256,7 @@ const AdminProductDetail = (props) => {
 
       <div className='row d-flex justify-content-center align-items-center mt-5'>
         <div className='col-8'>
-          <h3 className='text-center mb-4'>Master Produk</h3>
+          <h3 className='text-left mb-4'>Produk Detail</h3>
           <hr />
           <div className='border rounded p-5'>{renderProductDetail()}</div>
         </div>

@@ -1,6 +1,6 @@
 const INITIAL_STATE = {
   iduser: '',
-  name: '',
+  name: null,
   email: '',
   handphone: '',
   role: '',

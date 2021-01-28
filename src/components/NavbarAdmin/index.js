@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { logoutUser } from '../../redux/actions';
 import {
   Collapse,
@@ -19,6 +19,8 @@ const NavbarAdmin = () => {
   const toggle = () => setIsOpen(!isOpen);
   const dispatch = useDispatch();
 
+  const history = useHistory();
+
   const { name } = useSelector(({ usersReducer }) => {
     return {
       name: usersReducer.name,
@@ -27,6 +29,7 @@ const NavbarAdmin = () => {
 
   const onLogout = () => {
     dispatch(logoutUser());
+    history.push('/');
   };
 
   return (

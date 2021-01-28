@@ -16,7 +16,7 @@ import {
   AdminAddProduct,
 } from './pages';
 import { useDispatch, useSelector } from 'react-redux';
-import { getProducts, keepLogin } from './redux/actions';
+import { getProducts, keepLogin, getCategory } from './redux/actions';
 import CartPage from './pages/CartPage';
 import TransactionPage from './pages/TransactionPage';
 
@@ -26,6 +26,7 @@ const App = (props) => {
   useEffect(() => {
     dispatch(keepLogin());
     dispatch(getProducts());
+    dispatch(getCategory());
   }, []);
 
   const { role } = useSelector(({ usersReducer }) => {
