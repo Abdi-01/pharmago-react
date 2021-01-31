@@ -81,6 +81,7 @@ export const deleteCart = (idcart) => {
         try {
             let del = await Axios.delete(API_URL + `/cart/delcart/${idcart}`)
             console.log(del.data.message)
+            dispatch(getCart())
         } catch (error) {
             console.log(error)
         }
@@ -93,6 +94,7 @@ export const deleteCustomCart = (idcartCustom) => {
         try {
             let del = await Axios.delete(API_URL + `/cart/delcustom/${idcartCustom}`)
             console.log(del.data.message)
+            dispatch(getCustomCart())
         } catch (error) {
             console.log(error)
         }
