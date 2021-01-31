@@ -36,15 +36,29 @@ export const addTransaction = (checkout, idcart, ongkir, total_payment, iduser_a
 //     }
 // }
 
-export const getTransaction = (iduser) => {
+export const getTransaction = () => {
     return async (dispatch) => {
         try {
-            let get = await Axios.get(API_URL + `/transactions/${iduser}`)
-            console.log('transactionAction.js getTransaction: ', get.data)
-            dispatch({
-                type: "GET_TRANSACTIONS",
-                payload: get.data.transactions
-            })
+            const headers = {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,
+                },
+            };
+
+            if (localStorage.getItem('token')) {
+                let get = await Axios.get(API_URL + `/transactions`, headers)
+                dispatch({
+                    type: "GET_TRANSACTIONS",
+                    payload: get.data.transactions
+                });
+            }
+
+            // let get = await Axios.get(API_URL + `/transactions/${iduser}`)
+            // console.log('transactionAction.js getTransaction: ', get.data)
+            // dispatch({
+            //     type: "GET_TRANSACTIONS",
+            //     payload: get.data.transactions
+            // })
         } catch (error) {
             console.log('transactionAction.js get error: ', error)
         }
@@ -56,6 +70,7 @@ export const payment = (idtransaction) => {
         try {
             let pay = await Axios.patch(API_URL + `/transactions/payment/${idtransaction}`)
             console.log('transactionAction.js payment: ', pay.data)
+            dispatch(getTransaction())
             // let get = await Axios.get(API_URL + `/transactions/${iduser}`)
             // dispatch({
             //     type: "GET_TRANSACTIONS",
@@ -66,3 +81,33 @@ export const payment = (idtransaction) => {
         }
     }
 }
+
+export const getDetailTransaction = (detail) => {
+    return async (dispatch) => {
+      try {
+        const headers = {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`,
+            },
+        };
+
+        if (localStorage.getItem('token')) {
+            let get = await Axios.get(API_URL + `/transactions${detail}`, headers)
+            dispatch({
+                type: "GET_DETAIL_TRANSACTION",
+                payload: get.data.transactions
+            });
+        }
+
+    //     let get = await Axios.get(API_URL + `/products${detail}`);
+    //     // console.log("productAction.js GetDetail: ", get.data)
+    //     dispatch({
+    //       type: 'GET_DETAIL',
+    //       payload: get.data.transactions,
+    //     });
+    
+      } catch (error) {
+        console.log(error);
+      }
+    };
+  };

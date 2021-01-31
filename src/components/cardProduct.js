@@ -10,13 +10,15 @@ import {
   CardTitle,
   Col,
 } from 'reactstrap';
+import { API_URL } from '../support/urlApi';
 
 const CardProduct = ({ children }) => {
   return (
     <Col sm={6} md={3} style={{ margin: 'auto', justifyContent: 'center' }}>
       <Card className="shadow-sm mx-1 my-2" style={{ textAlign: 'center', letterSpacing: 1.5, display: 'inline-flex', flexWrap: 'nowrap', borderRadius: 10, width: '100%' }}>
         <Link to={`/product-detail?idproduct=${children.idproduct}`} style={{ textDecoration: 'none' }}>
-          <CardImg top width='100%' src={children.product_image} alt={children.name} />
+          {/* <CardImg top width='100%' src={require(`${children.product_image}`)} alt={children.name} /> */}
+          <CardImg top width='100%' src={API_URL + children.product_image} alt={children.name} />
           <CardBody>
             <CardTitle tag='h6' style={{ color: 'black' }}>{children.name}</CardTitle>
             <CardSubtitle className="text-muted" style={{ fontSize: 13, fontStyle: 'italic', marginBottom: 5 }}>Per {children.satuan}</CardSubtitle>

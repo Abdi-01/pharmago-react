@@ -7,5 +7,7 @@ import Banner2 from './image/banner-2.jpg';
 import Banner3 from './image/banner-3.jpg';
 import no_data from './image/no_data.svg';
 import payment_confirmation from './image/payment_confirmation.svg';
+import not_pay_yet from './image/not_pay_yet.svg'
+import paid from './image/paid.svg'
 
-export { LogoPharmaGo, BloodIcon, IvIcon, DrugIcon, Banner1, Banner2, Banner3, no_data, payment_confirmation };
+export { LogoPharmaGo, BloodIcon, IvIcon, DrugIcon, Banner1, Banner2, Banner3, no_data, payment_confirmation, not_pay_yet, paid };

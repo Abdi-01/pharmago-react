@@ -4,6 +4,7 @@ import { Alert, Button, Card, CardBody, CardImg, Col, Container, Modal, ModalBod
 import { addToCart, getCart, getDetail, getProducts, keepLogin } from '../redux/actions';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { API_URL } from '../support/urlApi';
 
 
 const ProductDetail = (props) => {
@@ -89,7 +90,7 @@ const ProductDetail = (props) => {
                             <div className="card-tranparent">
                                 <CardBody style={{ justifyContent: 'center', alignItems: 'center' }}>
                                     <Card className='shadow' style={{ borderRadius: 20, overflow: 'auto' }}>
-                                        <CardImg top width='100%' src={detailProduct[0].product_image} />
+                                        <CardImg top width='100%' src={API_URL + detailProduct[0].product_image} />
                                     </Card>
                                     <div className="card-tranparent" style={{ justifyContent: 'center', alignItems: 'center', display: 'flex' }}>
                                         <Button disabled={qtyCart === 1} color='warning' style={{ marginTop: 15, borderRadius: 15, width: 30, height: 30, letterSpacing: 2, textAlign: 'center' }} onClick={() => btQtyCart('-')}><p style={{ marginLeft: -3, marginTop: -14, fontWeight: 'bolder', fontSize: 25 }}>-</p></Button>

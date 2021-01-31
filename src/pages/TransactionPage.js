@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Card, CardBody, CardImg, CardText, CardTitle, Container, DropdownItem } from 'reactstrap';
+import CardTransaction from '../components/cardTransaction';
 import { getTransaction } from '../redux/actions';
 
 const TransactionPage = (props) => {
@@ -8,7 +9,6 @@ const TransactionPage = (props) => {
 
     useEffect(() => {
         dispatch(getTransaction(3))
-        // dispatch(getTransaction(localStorage.getItem('refreshcart')))
     }, [])
 
     const { iduser, cartUser, customProducts, defaultAddress, transactions } = useSelector(state => {
@@ -26,12 +26,7 @@ const TransactionPage = (props) => {
         if (transactions.length > 0) {
             return transactions.map((item, index) => {
                 return (
-                    <Card>
-                        <CardBody>
-                            {/* <CardImg  /> */}
-                            <CardTitle>{item.invoice_number}</CardTitle>
-                        </CardBody>
-                    </Card>
+                    <CardTransaction key={index}>{item}</CardTransaction>
                 )
             })
         }
@@ -40,19 +35,19 @@ const TransactionPage = (props) => {
 
     return (
         <Container className='d-flex'>
-            <div className='m-2' style={{flex: 1}}>
+            {/* <div className='m-2' style={{flex: 1}}>
                 <Card>
                     <CardBody>
                         <CardTitle>Ini Menu User Profil</CardTitle>
                         <DropdownItem divider />
                     </CardBody>
                 </Card>
-            </div>
+            </div> */}
             <div className='m-2' style={{flex: 4}}>
                 <Card>
                     <CardBody>
                         <CardTitle>Daftar Belanja</CardTitle>
-                        <DropdownItem divider />
+                        <DropdownItem divider style={{marginBottom: 20}} />
                         {renderTransaction()}
                     </CardBody>
                 </Card>

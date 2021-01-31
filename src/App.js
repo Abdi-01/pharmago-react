@@ -19,6 +19,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getProducts, keepLogin, getCategory } from './redux/actions';
 import CartPage from './pages/CartPage';
 import TransactionPage from './pages/TransactionPage';
+import TransactionDetail from './pages/TransactionDetail';
 
 const App = (props) => {
   const dispatch = useDispatch();
@@ -65,6 +66,7 @@ const App = (props) => {
         ) : (
           <>
             <Route path='/order-list' component={TransactionPage} />
+            <Route path='/order-detail' component={TransactionDetail} />
             <Route path='/cart' component={CartPage} />
           </>
         )}

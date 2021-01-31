@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Button, DropdownItem, Input } from 'reactstrap';
 import { deleteCart, getCart, updateQty } from '../redux/actions';
+import { API_URL } from '../support/urlApi';
 
 const CardCart = ({ children }) => {
     const dispatch = useDispatch()
@@ -25,7 +26,7 @@ const CardCart = ({ children }) => {
             <Link to={`/product-detail?idproduct=${children.idproduct}`} style={{ textDecoration: 'none', color: 'black' }}>
                 <div className="card-tranparent d-flex"  >
                     <div style={{ flex: 1 }}>
-                        <img src={children.product_image} width='90%' />
+                        <img src={API_URL + children.product_image} width='90%' />
                     </div>
                     <div style={{ flex: 4, marginTop: 30 }}>
                         <p >{children.name}</p>
