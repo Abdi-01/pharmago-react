@@ -19,6 +19,7 @@ const AdminTransaksi = (props) => {
   const history = useHistory();
   const { allProducts, allTransaction } = useSelector(
     ({ usersReducer, ProductsReducer, transactionsReducer }) => {
+      console.log('alllllllllllllllllllllllllll', transactionsReducer.allTransaction)
       return {
         name: usersReducer.name,
         allProducts: ProductsReducer.allProducts,
@@ -51,6 +52,7 @@ const AdminTransaksi = (props) => {
 
   // render product lists
   const renderTransactions = () => {
+    if(renderSelected)
     return renderSelected.map((item, idx) => {
       return (
         <tr className='text-center' key={idx}>
