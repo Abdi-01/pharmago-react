@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, Redirect, useHistory } from 'react-router-dom';
 import classnames from 'classnames';
-
 import { NavbarAdmin } from '../../components';
 import {
   Button,
@@ -21,24 +20,26 @@ import {
   TabPane,
   Row,
 } from 'reactstrap';
+import { API_URL } from '../../support/urlApi';
+import { ImageNotFound } from '../../assets';
 
 const AdminProductDetail = (props) => {
   const [activeTab, setActiveTab] = useState('1');
-
+  const history = useHistory();
   const toggle = (tab) => {
     if (activeTab !== tab) setActiveTab(tab);
   };
 
   const { index } = props.location.state;
-  const { products } = useSelector(({ ProductsReducer }) => {
+  const { allProducts } = useSelector(({ ProductsReducer }) => {
     return {
-      products: ProductsReducer.products,
+      allProducts: ProductsReducer.allProducts,
     };
   });
 
   // render product lists
   const renderProductDetail = () => {
-    return products.map((item, idx) => {
+    return allProducts.map((item, idx) => {
       if (index === idx) {
         return (
           <div className='row' key={idx}>
@@ -47,7 +48,11 @@ const AdminProductDetail = (props) => {
                 <CardImg
                   top
                   width='70%'
-                  src={item.product_image}
+                  src={
+                    item.product_image === null
+                      ? ImageNotFound
+                      : API_URL + item.product_image
+                  }
                   alt={item.name}
                 />
               </Card>
@@ -78,26 +83,32 @@ const AdminProductDetail = (props) => {
                     className='border-bottom pb-1'
                     style={{ fontWeight: 'bold' }}
                   >
-                    Stock (Kemasan/Botol)
+                    Stock
                   </p>
                   <p
                     className='border-bottom pb-1'
                     style={{ fontWeight: 'bold' }}
                   >
-                    Total Stock (mg/ml)
+                    Total Netto
                   </p>
                 </div>
                 <div className='col-8'>
                   <p className='border-bottom pb-1'>{item.name}</p>
-                  <p className='border-bottom pb-1'>{item.category}</p>
+                  <p className='border-bottom pb-1'>
+                    {item.category === 'CUSTOM ORDER'
+                      ? 'OBAT RACIK'
+                      : item.category}
+                  </p>
                   <p className='border-bottom pb-1'>
                     Rp. {item.price_pcs.toLocaleString()}
                   </p>
                   <p className='border-bottom pb-1'>
-                    {Math.floor(item.stock_pcs)} {item.satuan}
+                    {Math.floor(item.stock_pcs)}{' '}
+                    {item.type_obat === 'racik' ? 'item' : item.satuan}
                   </p>
                   <p className='border-bottom pb-1'>
-                    {Math.floor(item.stock_pcs * item.qty_per_pcs)}
+                    {Math.floor(item.total_stock_satuan)}{' '}
+                    {item.type_obat === 'racik' ? item.satuan : null}
                   </p>
                 </div>
               </div>
@@ -258,6 +269,17 @@ const AdminProductDetail = (props) => {
         <div className='col-8'>
           <h3 className='text-left mb-4'>Produk Detail</h3>
           <hr />
+          <div className='row'>
+            <div className='col-12 d-flex justify-content-end'>
+              <Button
+                color='danger'
+                size='sm mb-3'
+                onClick={() => history.push('/admin-product')}
+              >
+                Kembali
+              </Button>
+            </div>
+          </div>
           <div className='border rounded p-5'>{renderProductDetail()}</div>
         </div>
       </div>

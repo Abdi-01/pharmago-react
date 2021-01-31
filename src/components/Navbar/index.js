@@ -12,6 +12,7 @@ import {
   DropdownItem,
   Badge,
   CardBody,
+  Card,
 } from 'reactstrap';
 import axios from 'axios';
 import {
@@ -41,24 +42,31 @@ const Navbar = (props) => {
   const toggleCart = () => setDropCartOpen((prevState) => !prevState);
   const history = useHistory();
 
-  const { errorStatus, errorMessage, iduser, role, products, cartUser, detailProduct, name } = useSelector(
-    ({ usersReducer, ProductsReducer, CartReducer }) => {
-      return {
-        errorStatus: usersReducer.errorStatus,
-        errorMessage: usersReducer.errorMessage,
-        role: usersReducer.role,
-        name: usersReducer.name,
-        iduser: usersReducer.iduser,
-        products: ProductsReducer.products,
-        cartUser: CartReducer.cartUser,
-        detailProduct: ProductsReducer.detailProduct
-      };
-    }
-  );
+  const {
+    errorStatus,
+    errorMessage,
+    iduser,
+    role,
+    products,
+    cartUser,
+    detailProduct,
+    name,
+  } = useSelector(({ usersReducer, ProductsReducer, CartReducer }) => {
+    return {
+      errorStatus: usersReducer.errorStatus,
+      errorMessage: usersReducer.errorMessage,
+      role: usersReducer.role,
+      name: usersReducer.name,
+      iduser: usersReducer.iduser,
+      products: ProductsReducer.products,
+      cartUser: CartReducer.cartUser,
+      detailProduct: ProductsReducer.detailProduct,
+    };
+  });
 
   useEffect(() => {
-    dispatch(getCart())
-  }, [])
+    dispatch(getCart());
+  }, []);
 
   // submit for login form
   const onSubmit = (data) => {
@@ -69,37 +77,14 @@ const Navbar = (props) => {
         setTimeout(() => {
           setVisible(false);
           history.push('/');
-        }, 1500);
+        }, 1000);
       })
     );
     setVisibleAlert(true);
     setTimeout(() => {
       setVisibleAlert(false);
-    }, 2000);
+    }, 3000);
   };
-
-  // const onSubmit = (data) => {
-  //   const { email, password } = data;
-  //   dispatch(loginUser(email, password));
-  //   setVisibleAlert(true);
-  //   setTimeout(() => {
-  //     setVisibleAlert(false);
-  //     setVisible(false);
-  //   }, 1000);
-  // };
-
-  // useEffect(() => {
-  //   if (iduser) {
-  //     // show modal alert
-  //     setVisibleAlert(false);
-  //     // close modal login
-  //     setTimeout(() => {
-  //       setVisible(false);
-  //     }, 1000);
-  //   }
-  //   // redirect to homepage
-  //   history.push('/');
-  // }, [iduser]);
 
   //  open/close modal alert
   const openAlert = () => {
@@ -111,13 +96,13 @@ const Navbar = (props) => {
   };
 
   //  open/close modal alert
-  const openAlertForPassword = () => {
-    setVisibleAlertForgotPassword(true);
-  };
+  // const openAlertForPassword = () => {
+  //   setVisibleAlertForgotPassword(true);
+  // };
 
-  const closeAlertForPassword = () => {
-    setVisibleAlertForgotPassword(false);
-  };
+  // const closeAlertForPassword = () => {
+  //   setVisibleAlertForgotPassword(false);
+  // };
 
   // open/clsoe login modal
   const openModal = () => {
@@ -249,6 +234,7 @@ const Navbar = (props) => {
   };
 
   const renderCart = () => {
+    console.log('check cart in navbar', cartUser);
     return cartUser.map((item, index) => {
       return (
         <>
@@ -259,7 +245,7 @@ const Navbar = (props) => {
           >
             <div className='card-tranparent d-flex'>
               <div style={{ flex: 1 }}>
-                <img src={item.product_image} width='100%' />
+                <img src={API_URL + item.product_image} width='100%' />
               </div>
               <div style={{ flex: 2, marginTop: 20 }}>
                 <p style={{ fontSize: 14, fontWeight: '600' }}>
@@ -295,11 +281,12 @@ const Navbar = (props) => {
 
   const onLogout = () => {
     dispatch(logoutUser());
+    history.push('/');
   };
 
   return (
     <div
-      className='border-bottom pb-3 pt-3'
+      className='border-bottom pb-3 pt-3 '
       style={{ backgroundColor: 'white' }}
     >
       <div className='container pt-2 pb-0'>
@@ -351,14 +338,13 @@ const Navbar = (props) => {
                     </DropdownMenu>
                   </Dropdown>
                 </li>
-                <li className='mr-2'>
+                <li>
                   <Link to='/'>
                     <i className='large material-icons right-menu_icon'>
                       notifications
                     </i>
                   </Link>
                 </li>
-
                 <li className='ml-3'>
                   {/* user role menu */}
                   {iduser ? (
@@ -384,45 +370,75 @@ const Navbar = (props) => {
                         </DropdownMenu>
                       </Dropdown>
                     ) : (
-                        <Dropdown isOpen={dropdownOpen} toggle={toggle}>
-                          <DropdownToggle
-                            style={{
-                              backgroundColor: 'transparent',
-                              border: 'none',
-                              alignSelf: 'center',
-                            }}
-                          >
-                            <i className='large material-icons right-menu_icon'>
-                              account_circle
-                          </i>
-                          </DropdownToggle>
-                          <DropdownMenu right>
-                            <DropdownItem style={{ fontWeight: 'bold' }}>
-                              {name}
-                            </DropdownItem>
-                            <DropdownItem divider />
-                            <DropdownItem>Profile</DropdownItem>
-                            <DropdownItem onClick={onLogout}>Logout</DropdownItem>
-                          </DropdownMenu>
-                        </Dropdown>
-                      )
-                  ) : (
                       <Dropdown isOpen={dropdownOpen} toggle={toggle}>
                         <DropdownToggle
                           style={{
                             backgroundColor: 'transparent',
                             border: 'none',
-                            color: 'black',
-                            fontWeight: 'bold',
+                            alignSelf: 'center',
                           }}
-                          onClick={openModal}
                         >
                           <i className='large material-icons right-menu_icon'>
-                            input
-                        </i>
+                            account_circle
+                          </i>
                         </DropdownToggle>
+                        <DropdownMenu right style={{ width: '14rem' }}>
+                          <DropdownItem
+                            style={{
+                              fontWeight: 'bold',
+                              display: 'flex',
+                            }}
+                          >
+                            <Card className='w-100 pl-5 pr-5 pt-2 pb-2'>
+                              <span>{name}</span>
+                            </Card>
+                          </DropdownItem>
+                          <DropdownItem divider />
+                          <DropdownItem
+                            style={{
+                              display: 'flex',
+                            }}
+                          >
+                            <i className='large material-icons mr-2'>
+                              account_box
+                            </i>{' '}
+                            <span>Profile</span>
+                          </DropdownItem>
+                          <DropdownItem divider />
+                          <DropdownItem
+                            onClick={onLogout}
+                            style={{
+                              display: 'flex',
+                            }}
+                          >
+                            <i className='large material-icons mr-2'>
+                              exit_to_app
+                            </i>
+                            <span>Logout</span>
+                          </DropdownItem>
+                        </DropdownMenu>
                       </Dropdown>
-                    )}
+                    )
+                  ) : (
+                    <Dropdown isOpen={dropdownOpen} toggle={toggle}>
+                      <DropdownToggle
+                        style={{
+                          backgroundColor: 'transparent',
+                          border: 'none',
+                          color: 'black',
+                          fontWeight: 'bold',
+                        }}
+                        onClick={openModal}
+                      >
+                        <div className='d-flex mb-2'>
+                          <i className='large material-icons right-menu_icon pr-1'>
+                            login
+                          </i>
+                          <span>Login</span>
+                        </div>
+                      </DropdownToggle>
+                    </Dropdown>
+                  )}
                 </li>
               </ul>
             </div>

@@ -1,15 +1,17 @@
 import Axios from 'axios';
 import { API_URL } from '../../support/urlApi';
+import { getCart, getCustomCart } from './cartAction';
 
 export const registerUser = (data, cb) => {
   return async (dispatch) => {
     try {
       const results = await Axios.post(API_URL + `/users/register`, { data });
-      console.log('check registerUser', results);
       dispatch({
         type: 'REGISTER_SUCCESS',
         payload: results.data,
       });
+
+      // callback for redirect page
       cb();
     } catch (error) {
       console.log(error.response);
@@ -29,7 +31,6 @@ export const accountVerify = (otp, token, cb) => {
           Authorization: `Bearer ${token}`,
         },
       };
-
       const results = await Axios.patch(
         API_URL + `/users/account-verify`,
         {
@@ -48,60 +49,10 @@ export const accountVerify = (otp, token, cb) => {
   };
 };
 
-// export const loginUser = (email, password) => {
-//   return async (dispatch) => {
-//     try {
-//       const results = await Axios.post(API_URL + `/users/login`, {
-//         email,
-//         password,
-//       });
-//       dispatch({
-//         type: 'LOGIN_SUCCESS',
-//         payload: results.data,
-//       });
-//       localStorage.setItem('token', results.data.token);
-//       const headers = {
-//         headers: {
-//           Authorization: `Bearer ${localStorage.getItem('token')}`,
-//         },
-//       };
-//       // console.log('check error results', results.status);
-//       // check jika status 200
-//       if (results.status === 200) {
-//         let get = await Axios.get(
-//           API_URL + `/cart/${results.data.user[0].iduser}`,
-//           headers
-//         );
-//         localStorage.setItem(`refreshcart`, results.data.user[0].iduser);
-//         dispatch({
-//           type: 'GET_CART',
-//           payload: get.data.cartUser,
-//         });
-//         let results = await Axios.get(
-//           API_URL + `/users/defaultAddress/${results.data.user[0].iduser}`
-//         );
-//         dispatch({
-//           type: 'GET_DEFAULT_ADDRESS',
-//           payload: results.data.defaultAddress,
-//         });
-//       }
-//       dispatch({
-//         type: 'LOGIN_SUCCESS',
-//         payload: results.data,
-//       });
-//     } catch (err) {
-//       // console.log('check error login', err);
-//       dispatch({
-//         type: 'LOGIN_FAILED',
-//         payload: err.response ? err.response.data : err.message,
-//       });
-//     }
-//   };
-// };
-
 export const loginUser = (email, password, cb) => {
   return async (dispatch) => {
     try {
+      // get login
       const results = await Axios.post(API_URL + `/users/login`, {
         email,
         password,
@@ -110,33 +61,36 @@ export const loginUser = (email, password, cb) => {
         type: 'LOGIN_SUCCESS',
         payload: results.data,
       });
+
+      // callback for redirect page
       cb();
+
       localStorage.setItem('token', results.data.token);
       const headers = {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
       };
+
       if (results) {
-        let get = await Axios.get(
-          API_URL + `/cart/${results.data.user[0].iduser}`,
-          headers
-        );
-        localStorage.setItem(`refreshcart`, results.data.user[0].iduser);
+        // get cart data
+        let get = await Axios.get(API_URL + `/cart`, headers);
         dispatch({
           type: 'GET_CART',
           payload: get.data.cartUser,
         });
-        let results = await Axios.get(
-          API_URL + `/users/defaultAddress/${results.data.user[0].iduser}`
+
+        // get address data
+        let resAddress = await Axios.get(
+          API_URL + `/users/defaultAddress`,
+          headers
         );
         dispatch({
           type: 'GET_DEFAULT_ADDRESS',
-          payload: results.data.defaultAddress,
+          payload: resAddress.data.defaultAddress,
         });
       }
     } catch (error) {
-      console.log(error.response);
       dispatch({
         type: 'LOGIN_FAILED',
         payload: error.response ? error.response.data : error.message,
@@ -151,14 +105,14 @@ export const forgotPassword = (email, cb) => {
       const results = await Axios.post(API_URL + `/users/forgot-password`, {
         email,
       });
-      console.log('action forgotPassword', results);
       dispatch({
         type: 'FORGOT_PASSWORD_SUCCESS',
         payload: results.data,
       });
+
+      // callback for redirect page
       cb();
     } catch (error) {
-      console.log('action error forgotPassword', error.response);
       dispatch({
         type: 'FORGOT_PASSWORD_FAILED',
         payload: error.response.data,
@@ -178,6 +132,8 @@ export const resetPassword = (password, iduser, cb) => {
         type: 'RESET_PASSWORD_SUCCESS',
         payload: results.data,
       });
+
+      // callback for redirect page
       cb();
     } catch (error) {
       console.log(error);
@@ -196,10 +152,12 @@ export const keepLogin = () => {
       if (localStorage.getItem('token')) {
         let results = await Axios.get(API_URL + `/users/keep-login`, headers);
         localStorage.setItem('token', results.data.token);
+
         dispatch({
           type: 'KEEP_LOGIN',
           payload: results.data,
         });
+        dispatch(getCart());
       }
     } catch (error) {
       console.log(error);
@@ -216,7 +174,10 @@ export const getDefaultAddress = () => {
         },
       };
       if (localStorage.getItem('token')) {
-        let results = await Axios.get(API_URL + `/users/defaultAddress`, headers);
+        let results = await Axios.get(
+          API_URL + `/users/defaultAddress`,
+          headers
+        );
         dispatch({
           type: 'GET_DEFAULT_ADDRESS',
           payload: results.data,
@@ -227,6 +188,7 @@ export const getDefaultAddress = () => {
     }
   };
 };
+
 export const logoutUser = () => {
   return async (dispatch) => {
     try {

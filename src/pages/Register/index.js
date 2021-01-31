@@ -16,6 +16,17 @@ import { registerUser } from '../../redux/actions/usersAction';
 const Register = (props) => {
   const dispatch = useDispatch();
   const history = useHistory();
+  const [visiblePassword, setVisiblePassword] = useState(false);
+  const [visibleConfirmPassword, setVisibleConfirmPassword] = useState(false);
+
+  const togglePassword = () => {
+    setVisiblePassword(!visiblePassword);
+  };
+
+  const toggleConfirmPassword = () => {
+    setVisibleConfirmPassword(!visibleConfirmPassword);
+  };
+
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -184,7 +195,7 @@ const Register = (props) => {
               Sudah punya akun?
               <span style={{ color: 'black' }} role='button'>
                 {' '}
-                Login disini
+                Silahkan Login
               </span>
             </p>
             <Alert
@@ -238,16 +249,28 @@ const Register = (props) => {
                     </FormGroup>
                   </div>
                   <div className='mt-3'>
-                    <FormGroup>
+                    <FormGroup className='position-relative'>
                       <Label>Password</Label>
                       <Input
-                        type='password'
+                        type={!visiblePassword ? 'password' : 'text'}
                         onChange={(e) =>
                           handleChange('password', e.target.value)
                         }
                         className='mb-2'
                         placeholder='Min. 8 Character ( Abjad, Number, Symbol)'
                       />
+                      <i
+                        className='material-icons position-absolute'
+                        role='button'
+                        style={{
+                          left: '29.2rem',
+                          top: '2.5rem',
+                          fontSize: 20,
+                        }}
+                        onClick={togglePassword}
+                      >
+                        remove_red_eye
+                      </i>
                       {password.length > 7 && (
                         <Progress
                           animated
@@ -260,10 +283,10 @@ const Register = (props) => {
                     </FormGroup>
                   </div>
                   <div className='mt-3'>
-                    <FormGroup>
+                    <FormGroup className='position-relative'>
                       <Label>Konfirmasi Password</Label>
                       <Input
-                        type='password'
+                        type={!visibleConfirmPassword ? 'password' : 'text'}
                         onChange={(e) =>
                           handleChange('confirmPassword', e.target.value)
                         }
@@ -272,6 +295,18 @@ const Register = (props) => {
                           confirmPassword.length > 0 && !confirmPasswordValidasi
                         }
                       />
+                      <i
+                        className='material-icons position-absolute'
+                        role='button'
+                        style={{
+                          left: '29.2rem',
+                          top: '2.5rem',
+                          fontSize: 20,
+                        }}
+                        onClick={toggleConfirmPassword}
+                      >
+                        remove_red_eye
+                      </i>
                       <FormFeedback valid>Password sama</FormFeedback>
                       <FormFeedback>Password tidak sama</FormFeedback>
                     </FormGroup>

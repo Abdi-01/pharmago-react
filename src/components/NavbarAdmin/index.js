@@ -56,14 +56,28 @@ const NavbarAdmin = () => {
             </DropdownToggle>
             <DropdownMenu left>
               <DropdownItem>
-                <Link to='/admin-product'> Master Produk</Link>
+                <Link to='/' className='text-black-50'>
+                  Dashboard
+                </Link>
               </DropdownItem>
               <DropdownItem divider />
-              <DropdownItem>Transaksi</DropdownItem>
+              <DropdownItem>
+                <Link to='/admin-product' className='text-black-50'>
+                  {' '}
+                  Master Produk
+                </Link>
+              </DropdownItem>
               <DropdownItem divider />
-              <DropdownItem>Report</DropdownItem>
+              <DropdownItem>
+                <Link to='/admin-transaksi' className='text-black-50'>
+                  {' '}
+                  Transaksi
+                </Link>
+              </DropdownItem>
               <DropdownItem divider />
-              <DropdownItem onClick={onLogout}>Logout</DropdownItem>
+              <DropdownItem onClick={onLogout} className='text-black-50'>
+                Logout
+              </DropdownItem>
               <DropdownItem divider />
             </DropdownMenu>
           </UncontrolledDropdown>

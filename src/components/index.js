@@ -6,6 +6,7 @@ import ForgotPassword from './ForgotPassword';
 import Suggestions from './Suggestions';
 import Footer from './Footer';
 import NavbarAdmin from './NavbarAdmin';
+import ChartAdmin from './ChartAdmin';
 
 export {
   Navbar,
@@ -16,4 +17,5 @@ export {
   Suggestions,
   Footer,
   NavbarAdmin,
+  ChartAdmin,
 };
