@@ -1,37 +1,37 @@
 const INITIAL_STATE = {
-    cartUser: [],
-    customCart: []
-    // refresh: false,
-    // totalPayment: 0,
-    // success: false,
-    // error: '',
-    // message: ''
-}
+  cartUser: [],
+  customCart: [],
+  // refresh: false,
+  // totalPayment: 0,
+  // success: false,
+  // error: '',
+  // message: ''
+};
 
 export default (state = INITIAL_STATE, action) => {
-    switch (action.type) {
-        case "GET_CART":
-            // console.log("CEK GET_CART REDUCER: ", action.payload)
-            return {
-                ...state,
-                cartUser: action.payload
-            }
-        case "GET_CUSTOM_CART":
-            console.log("CEK GET_CUSTOM_CART REDUCER: ", action.payload)
-            return {
-                ...state,
-                customCart: action.payload
-            }
-        case "ADD_CUSTOM_CART":
-            console.log("CEK ADD_CUSTOM_CART REDUCER: ", action.payload)
-            return {
-                ...state,
-                customCart: action.payload
-            }
-        case "RESET_CART":
-            console.log("RESET REDUCER: ", INITIAL_STATE)
-            return INITIAL_STATE
-        default:
-            return state;
-    }
-}
+  switch (action.type) {
+    case 'GET_CART':
+      console.log('CEK GET_CART REDUCER: ', action.payload);
+      return {
+        ...state,
+        cartUser: action.payload,
+      };
+    case 'GET_CUSTOM_CART':
+      console.log('CEK GET_CUSTOM_CART REDUCER: ', action.payload);
+      return {
+        ...state,
+        customCart: action.payload,
+      };
+    case 'ADD_CUSTOM_CART':
+      console.log('CEK ADD_CUSTOM_CART REDUCER: ', action.payload);
+      return {
+        ...state,
+        customCart: action.payload,
+      };
+    case 'RESET_CART':
+      console.log('RESET REDUCER: ', INITIAL_STATE);
+      return INITIAL_STATE;
+    default:
+      return state;
+  }
+};

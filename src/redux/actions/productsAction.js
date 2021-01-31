@@ -40,16 +40,16 @@ export const getDetail = (detail) => {
 export const getCustomProducts = () => {
   return async (dispatch) => {
     try {
-      let get = await Axios.get(API_URL + `/products/custom`)
+      let get = await Axios.get(API_URL + `/products/custom`);
       // console.log("productAction.js GetCustomProducts: ", get.data)
       dispatch({
         type: 'GET_CUSTOM_PRODUCTS',
-        payload: get.data.customProducts
-      })
+        payload: get.data.customProducts,
+      });
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
+  };
 };
 
 export const getCategory = () => {
@@ -81,6 +81,7 @@ export const getProductSearch = () => {
   };
 };
 
+/* Admin product action*/
 export const addProduct = (data, file, cb) => {
   return async (dispatch) => {
     try {
@@ -104,6 +105,57 @@ export const addProduct = (data, file, cb) => {
         type: 'ADD_PRODUCT_FAIL',
         payload: error.response.data,
       });
+    }
+  };
+};
+
+export const getAllProducts = () => {
+  return async (dispatch) => {
+    try {
+      let results = await Axios.get(API_URL + `/products/all-products`);
+      dispatch({
+        type: 'GET_ALL_PRODUCTS',
+        payload: results.data.dataProducts,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+};
+
+export const editProduct = (idproduct, data, file, cb) => {
+  return async (dispatch) => {
+    try {
+      let formData = new FormData();
+
+      formData.append('data', JSON.stringify(data));
+      formData.append('idproduct', JSON.stringify(idproduct));
+      formData.append('file', file);
+
+      let results = await Axios.put(
+        API_URL + `/products/edit-product/${idproduct}`,
+        formData
+      );
+      // callback function for redirect
+      cb();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+};
+
+export const deleteProduct = (idproduct) => {
+  return async (dispatch) => {
+    try {
+      const results = await Axios.patch(
+        API_URL + `/products/delete-product/${idproduct}`
+      );
+      dispatch({
+        type: 'DELETE_PRODUCT_SUCCESS',
+      });
+      dispatch(getAllProducts());
+    } catch (error) {
+      console.log(error);
     }
   };
 };

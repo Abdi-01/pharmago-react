@@ -4,6 +4,7 @@ const INITIAL_STATE = {
   category: [],
   search: [],
   errorStatus: null,
+  allProducts: [],
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -42,6 +43,12 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         errorStatus: action.payload.errorStatus,
+      };
+    case 'GET_ALL_PRODUCTS':
+      console.log('productsReducer.js GET_ALL_PRODUCTS: ', action.payload);
+      return {
+        ...state,
+        allProducts: action.payload,
       };
     case 'ADD_PRODUCT_FAIL':
       console.log('productsReducer.js ADD_PRODUCT_FAIL: ', action.payload);

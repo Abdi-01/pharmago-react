@@ -18,42 +18,59 @@ import {
   FormFeedback,
   Card,
 } from 'reactstrap';
-import { addProduct } from '../../redux/actions';
+import { addProduct, editProduct, getAllProducts } from '../../redux/actions';
+import { API_URL } from '../../support/urlApi';
 
-const AdminAddProduct = (props) => {
+const AdminEditProduct = (props) => {
   const dispatch = useDispatch();
   const history = useHistory();
-  const { errorStatus, category } = useSelector(({ ProductsReducer }) => {
-    return {
-      category: ProductsReducer.category,
-      errorStatus: ProductsReducer.errorStatus,
-    };
-  });
+
+  useEffect(() => {
+    dispatch(getAllProducts());
+    console.log('cek');
+  }, []);
+
+  const { errorStatus, category, allProducts } = useSelector(
+    ({ ProductsReducer }) => {
+      return {
+        category: ProductsReducer.category,
+        errorStatus: ProductsReducer.errorStatus,
+        allProducts: ProductsReducer.allProducts,
+      };
+    }
+  );
+
+  const { idproduct } = props.match.params;
+  let item = allProducts.filter(
+    (elem, idx) => elem.idproduct === parseInt(idproduct)
+  )[0];
+
+  // console.log(typeof parseInt(idproduct), typeof item.idproduct);
 
   const [errMessage, setErrMessage] = useState('');
   const [visibleAlert, setVisibleAlert] = useState(false);
   const [formData, setFormData] = useState({
-    name: '',
-    kategori: '',
-    desc_umum: '',
-    desc_indikasi: '',
-    desc_komposisi: '',
-    desc_dosis: '',
-    desc_aturanpakai: '',
-    desc_kontraindikasi: '',
-    desc_efeksamping: '',
-    desc_perhatian: '',
-    stock_pcs: 0,
-    qty_per_pcs: 0,
-    satuan: '',
-    price_pcs: 0,
-    type_obat: '', // racik, umum
-    isPublish: false,
+    name: item.name,
+    kategori: item.idcategory,
+    desc_umum: item.desc_umum,
+    desc_indikasi: item.desc_indikasi,
+    desc_komposisi: item.desc_komposisi,
+    desc_dosis: item.desc_dosis,
+    desc_aturanpakai: item.desc_aturanpakai,
+    desc_kontraindikasi: item.desc_kontraindikasi,
+    desc_efeksamping: item.desc_efeksamping,
+    desc_perhatian: item.desc_perhatian,
+    stock_pcs: item.stock_pcs,
+    qty_per_pcs: item.qty_per_pcs,
+    satuan: item.satuan,
+    price_pcs: item.price_pcs,
+    type_obat: item.type_obat, // racik, umum
+    isPublish: item.isPublish,
   });
 
   const [imageProduct, setImageProduct] = useState({
-    product_image_file_name: 'Select file',
-    product_image_file: undefined,
+    product_image_file_name: '',
+    product_image_file: '',
   });
 
   const {
@@ -75,12 +92,7 @@ const AdminAddProduct = (props) => {
     isPublish,
   } = formData;
 
-  const {
-    product_image_file_name,
-    product_image_file,
-    banner_image_file_name,
-    banner_image_file,
-  } = imageProduct;
+  const { product_image_file_name, product_image_file } = imageProduct;
 
   const handleChange = (prop, value) => {
     setFormData({ ...formData, [prop]: value });
@@ -109,27 +121,36 @@ const AdminAddProduct = (props) => {
     price_pcs === '' ||
     type_obat === '';
 
-  let checkPositifNumber = stock_pcs < 0 || qty_per_pcs < 0 || price_pcs < 0;
-
-  const onSubmit = () => {
+  const onUpdate = () => {
     if (checkRequiredField) {
       setVisibleAlert(true);
-      setErrMessage('Form masih ada yang kosong, silahkan lengkapi!');
+      setErrMessage(
+        'Kolom mandatory masih ada yang kosong, silahkan lengkapi!'
+      );
       setTimeout(() => {
         setVisibleAlert(false);
       }, 3000);
     } else {
       dispatch(
-        addProduct(formData, imageProduct.product_image_file, () => {
-          setVisibleAlert(true);
-          setErrMessage('Produk berhasil ditambahkan!');
-          setTimeout(() => {
-            history.push('/admin-product');
-            setVisibleAlert(false);
-          }, 2000);
-        })
+        editProduct(
+          idproduct,
+          formData,
+          imageProduct.product_image_file,
+          () => {
+            setVisibleAlert(true);
+            setErrMessage('Produk berhasil diupdate!');
+            setTimeout(() => {
+              history.push('/admin-product');
+              setVisibleAlert(false);
+            }, 2000);
+          }
+        )
       );
     }
+  };
+
+  const onCancel = () => {
+    history.push('/admin-product');
   };
 
   return (
@@ -139,7 +160,7 @@ const AdminAddProduct = (props) => {
       <div className='row d-flex justify-content-center align-items-center mt-5'>
         <div className='col-9'>
           <Form>
-            <h3 className='text-left mb-4'>Tambah Produk</h3>
+            <h3 className='text-left mb-4'>Edit Produk</h3>
             <hr />
 
             {/* error message */}
@@ -153,18 +174,6 @@ const AdminAddProduct = (props) => {
               <h6>{errMessage}</h6>
             </Alert>
 
-            <div className='row'>
-              <div className='col-12 d-flex justify-content-end'>
-                <Button
-                  color='danger'
-                  size='sm mb-3'
-                  onClick={() => history.push('/admin-product')}
-                >
-                  Kembali
-                </Button>
-              </div>
-            </div>
-
             <div className='row border rounded p-4'>
               <div className='col-6 border-right pr-5'>
                 <FormGroup row className='position-relative'>
@@ -172,8 +181,8 @@ const AdminAddProduct = (props) => {
                     class='material-icons position-absolute'
                     style={{
                       color: 'red',
-                      left: '7rem',
-                      top: '.3rem',
+                      left: '7.1rem',
+                      top: '.5rem',
                       fontSize: 10,
                     }}
                   >
@@ -187,6 +196,7 @@ const AdminAddProduct = (props) => {
                       type='text'
                       name='name'
                       id='name'
+                      defaultValue={name}
                       onChange={(e) => handleChange('name', e.target.value)}
                     />
                   </Col>
@@ -211,6 +221,7 @@ const AdminAddProduct = (props) => {
                       type='number'
                       name='price_pcs'
                       id='price_pcs'
+                      defaultValue={price_pcs}
                       onChange={(e) =>
                         handleChange('price_pcs', e.target.value)
                       }
@@ -222,7 +233,7 @@ const AdminAddProduct = (props) => {
                     class='material-icons position-absolute'
                     style={{
                       color: 'red',
-                      left: '4.9rem',
+                      left: '5rem',
                       top: '.5rem',
                       fontSize: 10,
                     }}
@@ -237,11 +248,16 @@ const AdminAddProduct = (props) => {
                       type='select'
                       name='kategori'
                       id='kategori'
+                      defaultValue={item.idcategory}
                       onChange={(e) => handleChange('kategori', e.target.value)}
                     >
-                      <option value='default'>-</option>
-                      {category.map((item, idx) => (
-                        <option value={item.idcategory}>{item.category}</option>
+                      {/* <option defaultChecked={item.idcategory}>
+                        {item.category}
+                      </option> */}
+                      {category.map((value, idx) => (
+                        <option key={idx} value={value.idcategory}>
+                          {value.category}
+                        </option>
                       ))}
                     </Input>
                   </Col>
@@ -268,6 +284,7 @@ const AdminAddProduct = (props) => {
                           type='number'
                           name='stock_pcs'
                           id='stock_pcs'
+                          defaultValue={Math.floor(stock_pcs)}
                           onChange={(e) =>
                             handleChange('stock_pcs', e.target.value)
                           }
@@ -281,7 +298,7 @@ const AdminAddProduct = (props) => {
                         class='material-icons position-absolute'
                         style={{
                           color: 'red',
-                          left: '4rem',
+                          left: '4.1rem',
                           top: '.5rem',
                           fontSize: 10,
                         }}
@@ -296,6 +313,7 @@ const AdminAddProduct = (props) => {
                           type='text'
                           name='satuan'
                           id='satuan'
+                          defaultValue={satuan}
                           onChange={(e) =>
                             handleChange('satuan', e.target.value)
                           }
@@ -327,6 +345,7 @@ const AdminAddProduct = (props) => {
                           type='number'
                           name='qty_per_pcs'
                           id='qty_per_pcs'
+                          defaultValue={qty_per_pcs}
                           onChange={(e) =>
                             handleChange('qty_per_pcs', e.target.value)
                           }
@@ -340,21 +359,22 @@ const AdminAddProduct = (props) => {
                         class='material-icons position-absolute'
                         style={{
                           color: 'red',
-                          left: '5.7rem',
+                          left: '5.8rem',
                           top: '.5rem',
                           fontSize: 10,
                         }}
                       >
                         star
                       </i>
-                      <Label for='type_obat' sm={4}>
+                      <Label for='type_obat' sm={6}>
                         Type Obat
                       </Label>
-                      <Col sm={8}>
+                      <Col sm={6}>
                         <Input
                           type='text'
                           name='type_obat'
                           id='type_obat'
+                          defaultValue={type_obat}
                           onChange={(e) =>
                             handleChange('type_obat', e.target.value)
                           }
@@ -389,8 +409,9 @@ const AdminAddProduct = (props) => {
                     />
                   </Col>
                 </FormGroup>
+
                 <Card className='d-flex align-items-center p-5'>
-                  <img id='imgPreview' width='30%' />
+                  <img id='imgPreview' width='30%' className='border' />
                 </Card>
               </div>
               {/* start kolom 2 */}
@@ -404,6 +425,7 @@ const AdminAddProduct = (props) => {
                       type='textarea'
                       name='desc_umum'
                       id='desc_umum'
+                      defaultValue={desc_umum}
                       onChange={(e) =>
                         handleChange('desc_umum', e.target.value)
                       }
@@ -419,6 +441,7 @@ const AdminAddProduct = (props) => {
                       type='textarea'
                       name='desc_indikasi'
                       id='desc_indikasi'
+                      defaultValue={desc_indikasi}
                       onChange={(e) =>
                         handleChange('desc_indikasi', e.target.value)
                       }
@@ -434,6 +457,7 @@ const AdminAddProduct = (props) => {
                       type='textarea'
                       name='desc_komposisi'
                       id='desc_komposisi'
+                      defaultValue={desc_komposisi}
                       onChange={(e) =>
                         handleChange('desc_komposisi', e.target.value)
                       }
@@ -449,6 +473,7 @@ const AdminAddProduct = (props) => {
                       type='textarea'
                       name='desc_dosis'
                       id='desc_dosis'
+                      defaultValue={desc_dosis}
                       onChange={(e) =>
                         handleChange('desc_dosis', e.target.value)
                       }
@@ -464,6 +489,7 @@ const AdminAddProduct = (props) => {
                       type='textarea'
                       name='desc_aturanpakai'
                       id='desc_aturanpakai'
+                      defaultValue={desc_aturanpakai}
                       onChange={(e) =>
                         handleChange('desc_aturanpakai', e.target.value)
                       }
@@ -479,6 +505,7 @@ const AdminAddProduct = (props) => {
                       type='textarea'
                       name='desc_kontraindikasi'
                       id='desc_kontraindikasi'
+                      defaultValue={desc_kontraindikasi}
                       onChange={(e) =>
                         handleChange('desc_kontraindikasi', e.target.value)
                       }
@@ -494,6 +521,7 @@ const AdminAddProduct = (props) => {
                       type='textarea'
                       name='desc_efeksamping'
                       id='desc_efeksamping'
+                      defaultValue={desc_efeksamping}
                       onChange={(e) =>
                         handleChange('desc_efeksamping', e.target.value)
                       }
@@ -509,6 +537,7 @@ const AdminAddProduct = (props) => {
                       type='textarea'
                       name='desc_perhatian'
                       id='desc_perhatian'
+                      defaultValue={desc_perhatian}
                       onChange={(e) =>
                         handleChange('desc_perhatian', e.target.value)
                       }
@@ -523,6 +552,7 @@ const AdminAddProduct = (props) => {
                       id='isPublish'
                       name='isPublish'
                       label='Publish'
+                      defaultChecked={isPublish}
                       onChange={(e) =>
                         handleChange('isPublish', e.target.checked)
                       }
@@ -530,8 +560,11 @@ const AdminAddProduct = (props) => {
                   </Col>
                 </FormGroup>
                 <div className='d-flex justify-content-end'>
-                  <Button color='success' className='w-25' onClick={onSubmit}>
-                    Submit
+                  <Button outline className='w-25 mr-3' onClick={onCancel}>
+                    Cancel
+                  </Button>
+                  <Button color='success' className='w-25' onClick={onUpdate}>
+                    Update
                   </Button>
                 </div>
               </div>
@@ -544,4 +577,4 @@ const AdminAddProduct = (props) => {
   );
 };
 
-export default AdminAddProduct;
+export default AdminEditProduct;
