@@ -28,6 +28,7 @@ import {
 } from './redux/actions';
 import CartPage from './pages/CartPage';
 import TransactionPage from './pages/TransactionPage';
+import TransactionDetail from './pages/TransactionDetail';
 
 const App = (props) => {
   const dispatch = useDispatch();
@@ -82,14 +83,13 @@ const App = (props) => {
               component={AdminTransaksiDetail}
             />
           </>
-        ) : (
-          role === 'user' && (
-            <>
-              <Route path='/order-list' component={TransactionPage} />
-              <Route path='/cart' component={CartPage} />
-            </>
-          )
-        )}
+        ) : role === 'user' && (
+          <>
+            <Route path='/order-list' component={TransactionPage} />
+            <Route path='/order-detail' component={TransactionDetail} />
+            <Route path='/cart' component={CartPage} />
+          </>)
+        }
         <Route path='*' component={NotFound} />
       </Switch>
       <Footer />
