@@ -49,6 +49,7 @@ export default (state = INITIAL_STATE, action) => {
     case 'GET_DEFAULT_ADDRESS':
       // console.log('defaultadress', action.payload);
       return {
+        ...state,
         defaultAddress: action.payload.defaultAddress,
       };
     case 'GET_CART':

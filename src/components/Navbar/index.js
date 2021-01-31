@@ -43,6 +43,7 @@ const Navbar = (props) => {
 
   const { errorStatus, errorMessage, iduser, role, products, cartUser, detailProduct, name } = useSelector(
     ({ usersReducer, ProductsReducer, CartReducer }) => {
+      console.log('Cek data =========',usersReducer)
       return {
         errorStatus: usersReducer.errorStatus,
         errorMessage: usersReducer.errorMessage,
