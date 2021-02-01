@@ -2,13 +2,14 @@ import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Button, DropdownItem, Input } from 'reactstrap';
-import { deleteCart, getCart, updateQty } from '../redux/actions';
+import { deleteCart, getCart, updateNote, updateQty } from '../redux/actions';
 import { API_URL } from '../support/urlApi';
 
 const CardCart = ({ children }) => {
   const dispatch = useDispatch();
 
   const [addNote, setAddNote] = useState(false);
+  const [note, setNote] = useState('')
 
   // Qty modification function
   const btQty = (type, qty, idcart) => {
@@ -20,6 +21,12 @@ const CardCart = ({ children }) => {
       dispatch(updateQty(qty, 'dec', idcart));
     }
   };
+
+  const handleNote = (e) => {
+    console.log('handleNote: e => ', e.target.value);
+    setNote(e.target.value)
+  };
+
 
   return (
     <>
@@ -75,7 +82,7 @@ const CardCart = ({ children }) => {
                 }}
                 onClick={() => setAddNote(!addNote)}
               >
-                Add Notes for this children
+                Tambahkan catatan
               </p>
             )
           ) : (
@@ -83,9 +90,11 @@ const CardCart = ({ children }) => {
               type='text'
               onBlur={() => {
                 setAddNote(!addNote);
+                dispatch(updateNote(children.idcart, note))
               }}
               style={{ width: '60%' }}
               defaultValue={children.note ? children.note : ''}
+              onChange={(e) => handleNote(e)}
             />
           )}
         </div>

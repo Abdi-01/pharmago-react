@@ -128,13 +128,8 @@ export const updateQty = (qty, type, id) => {
 export const updateNote = (idcart, note) => {
   return async (dispatch) => {
     try {
-      let update = await Axios.patch(API_URL + `/cart/updNote/${idcart}`, {
-        note,
-      });
-      dispatch({
-        type: 'GET_CART',
-        payload: update.data.cartUser,
-      });
+      let update = await Axios.patch(API_URL + `/cart/updNote/${idcart}`, { note });
+      dispatch(getCart());
     } catch (error) {
       console.log(error);
     }
