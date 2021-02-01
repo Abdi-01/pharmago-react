@@ -101,13 +101,12 @@ const ProductPage = (props) => {
     return (
         <Container>
             <div className='d-flex'>
-                <div style={{ flex: 1 }}>
+                <div style={{ flex: 3 }}>
                     {renderCategory()}
                 </div>
-                <div style={{ flex: 1 }}>
-
-                    <Dropdown isOpen={dropdownOpen} toggle={toggle} >
-                        <DropdownToggle caret style={{ marginTop: 30 }} >
+                <div style={{ width: '10%', alignContent: 'center' }}>
+                    <Dropdown isOpen={dropdownOpen} toggle={toggle} style={{ width: '100%',padding:'10%' }}>
+                        <DropdownToggle caret style={{ marginTop: 30, backgroundColor: 'gray' }} >
                             Sortir
                         </DropdownToggle>
                         <DropdownMenu>
