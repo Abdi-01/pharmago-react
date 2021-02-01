@@ -12,12 +12,8 @@ const TransactionPage = (props) => {
         dispatch(getCart())
     }, [])
 
-    const { iduser, cartUser, customProducts, defaultAddress, transactions } = useSelector(state => {
+    const { transactions } = useSelector(state => {
         return {
-            iduser: state.usersReducer.iduser,
-            cartUser: state.CartReducer.cartUser,
-            customProducts: state.ProductsReducer.customProducts,
-            defaultAddress: state.usersReducer.defaultAddress[0],
             transactions: state.transactionsReducer.transactions
         }
     })
@@ -36,14 +32,6 @@ const TransactionPage = (props) => {
 
     return (
         <Container className='d-flex'>
-            {/* <div className='m-2' style={{flex: 1}}>
-                <Card>
-                    <CardBody>
-                        <CardTitle>Ini Menu User Profil</CardTitle>
-                        <DropdownItem divider />
-                    </CardBody>
-                </Card>
-            </div> */}
             <div className='m-2' style={{flex: 4}}>
                 <Card>
                     <CardBody style={{position: 'relative'}}>

@@ -2,6 +2,7 @@
   "name": "pharmago-react",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://pharmago.codeaddict.my.id",
   "dependencies": {
     "@fortawesome/free-solid-svg-icons": "^5.15.2",
     "@hookform/error-message": "0.0.5",

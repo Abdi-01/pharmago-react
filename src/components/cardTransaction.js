@@ -35,9 +35,9 @@ const CardTransaction = ({ children }) => {
                             <div style={{ textAlign: 'right', display: 'inline', float: 'right', fontSize: 13, color: 'grey' }}>
                                 {
                                     children.payment_status === 'paid' ?
-                                    <Badge color='success' style={{padding: 5}}>{children.payment_status}</Badge>
+                                    <Badge color='success' style={{padding: 7}}>{children.payment_status}</Badge>
                                     :
-                                    <Badge color='secondary' style={{padding: 5}}>{children.payment_status}</Badge>
+                                    <Badge color='warning' style={{padding: 7}}>{children.payment_status}</Badge>
                                 }
                                 <p>ORDER-ID : {children.invoice_number}</p>
                             </div>
