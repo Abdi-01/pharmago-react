@@ -30,7 +30,7 @@ const ModalCart = (props) => {
     const { iduser, defaultAddress, idpayment} = useSelector((state) => {
         return {
             iduser: state.usersReducer.iduser,
-            defaultAddress: state.usersReducer.defaultAddress,
+            defaultAddress: state.usersReducer.defaultAddress[0],
             idpayment: state.transactionsReducer.idpayment
         };
     });
