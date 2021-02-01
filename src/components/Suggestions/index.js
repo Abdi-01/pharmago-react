@@ -6,6 +6,7 @@ import {
   DropdownMenu,
   DropdownItem,
 } from 'reactstrap';
+import { API_URL } from '../../support/urlApi';
 import './suggestion.css';
 
 const Suggestions = ({ results, searchRef, handleInputChange, openSearch }) => {
@@ -44,17 +45,27 @@ const Suggestions = ({ results, searchRef, handleInputChange, openSearch }) => {
                 <DropdownItem className='p-2'>
                   <div className='d-flex align-items-center'>
                     <img
-                      src={item.product_image}
-                      width='10%'
+                      src={API_URL + item.product_image}
+                      width='15%'
                       style={{
                         border: '1px solid #ced4da',
                         borderRadius: '10px',
                         marginRight: '2rem',
                       }}
                     />
-                    <div>
+                    <div className='pt-3'>
                       <p style={{ fontWeight: 'bold', fontSize: '14px' }}>
                         {item.name.toUpperCase()}
+                      </p>
+                      <p
+                        style={{
+                          fontWeight: 'bold',
+                          fontSize: '14px',
+                          color: 'red',
+                        }}
+                      >
+                        Rp
+                        {item.price_pcs.toLocaleString()},-
                       </p>
                     </div>
                   </div>

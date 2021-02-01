@@ -16,22 +16,20 @@ export default (state = INITIAL_STATE, action) => {
     case 'REGISTER_SUCCESS':
     case 'LOGIN_SUCCESS':
     case 'KEEP_LOGIN':
-      console.log('success', action.payload.message);
       return {
         ...state,
-        iduser: action.payload.user[0].iduser,
-        name: action.payload.user[0].name,
-        email: action.payload.user[0].email,
-        handphone: action.payload.user[0].handphone,
-        role: action.payload.user[0].role,
-        isActive: action.payload.user[0].isActive,
+        iduser: action.payload.user.iduser,
+        name: action.payload.user.name,
+        email: action.payload.user.email,
+        handphone: action.payload.user.handphone,
+        role: action.payload.user.role,
+        isActive: action.payload.user.isActive,
         errorStatus: action.payload.error,
         errorMessage: action.payload.message,
       };
     case 'ACCOUNT_VERIFY_SUCCESS':
     case 'FORGOT_PASSWORD_SUCCESS':
     case 'RESET_PASSWORD_SUCCESS':
-      console.log('reducer', action.payload);
       return {
         ...state,
         errorMessage: action.payload.message,
@@ -49,6 +47,7 @@ export default (state = INITIAL_STATE, action) => {
     case 'GET_DEFAULT_ADDRESS':
       // console.log('defaultadress', action.payload);
       return {
+        ...state,
         defaultAddress: action.payload.defaultAddress,
       };
     case 'GET_CART':

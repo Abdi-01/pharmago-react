@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getProducts } from '../redux/actions';
-import { Col, Container, Dropdown, DropdownItem, DropdownMenu, DropdownToggle, Row } from 'reactstrap';
+import { Container, Dropdown, DropdownItem, DropdownMenu, DropdownToggle, Row } from 'reactstrap';
 import CardProduct from '../components/cardProduct';
 
 const ProductPage = (props) => {
     console.log(props.location.search) //?category=demam
     // Dropdown Setting 
-    const [dropdownName, setDropdownName] = useState('Sortir');
+    // const [dropdownName, setDropdownName] = useState('Sortir');
     const [dropdownOpen, setDropdownOpen] = useState(false);
-    const toggle = () => setDropdownOpen(prevState => !prevState);
+    const toggle = () => setDropdownOpen(!dropdownOpen);
 
     const dispatch = useDispatch()
     const { products } = useSelector(state => {
@@ -60,8 +60,8 @@ const ProductPage = (props) => {
             })
         } else if (tipe === 'Harga' && urutan === 'ASC') {
             products.sort((a, b) => {
-                let priceA = parseInt(a.price);
-                let priceB = parseInt(b.price);
+                let priceA = parseInt(a.price_pcs);
+                let priceB = parseInt(b.price_pcs);
                 if (priceA < priceB) {
                     return -1;
                 }
@@ -72,8 +72,8 @@ const ProductPage = (props) => {
             })
         } else if (tipe === 'Harga' && urutan === 'DESC') {
             products.sort((a, b) => {
-                let priceA = parseInt(a.price);
-                let priceB = parseInt(b.price);
+                let priceA = parseInt(a.price_pcs);
+                let priceB = parseInt(b.price_pcs);
                 if (priceA > priceB) {
                     return -1;
                 }
@@ -90,7 +90,7 @@ const ProductPage = (props) => {
     const renderCategory = () => {
         if (products.length > 0) {
             return (
-                <div className="card-tranparent" style={{ display: 'flex' }}>
+                <div style={{ display: 'flex' }}>
                     <img style={{ marginLeft: 7, marginBottom: 20, marginTop: 25 }} width='8%' src={products[0].thumb} alt={products[0].category} />
                     <h5 style={{ marginLeft: 20, marginTop: 33, letterSpacing: 2.5 }}>{products[0].category}</h5>
                 </div>
@@ -100,25 +100,25 @@ const ProductPage = (props) => {
 
     return (
         <Container>
-            <Row>
-                <Col>
+            <div className='d-flex'>
+                <div style={{ flex: 1 }}>
                     {renderCategory()}
-                </Col>
-                <Col>
+                </div>
+                <div style={{ flex: 1 }}>
+
                     <Dropdown isOpen={dropdownOpen} toggle={toggle} >
-                        <DropdownToggle caret style={{ marginTop: 30, float: 'right' }} >
-                            {dropdownName}
+                        <DropdownToggle caret style={{ marginTop: 30 }} >
+                            Sortir
                         </DropdownToggle>
                         <DropdownMenu>
-                            {/* <DropdownItem onClick={() => dispatch(getProducts())}>Kesesuaian</DropdownItem> */}
                             <DropdownItem onClick={() => sortProduct('Nama', 'ASC')}>Nama Produk (A-Z)</DropdownItem>
                             <DropdownItem onClick={() => sortProduct('Nama', 'DESC')}>Nama Produk (Z-A)</DropdownItem>
                             <DropdownItem onClick={() => sortProduct('Harga', 'ASC')}>Harga Terendah</DropdownItem>
                             <DropdownItem onClick={() => sortProduct('Harga', 'DESC')}>Harga Tertinggi</DropdownItem>
                         </DropdownMenu>
                     </Dropdown>
-                </Col>
-            </Row>
+                </div>
+            </div>
             <Row>
                 {renderProduct()}
             </Row>

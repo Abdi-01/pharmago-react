@@ -14,9 +14,18 @@ import {
   AdminProduct,
   AdminProductDetail,
   AdminAddProduct,
+  AdminEditProduct,
+  AdminTransaksi,
+  AdminTransaksiDetail,
 } from './pages';
 import { useDispatch, useSelector } from 'react-redux';
-import { getProducts, keepLogin, getCategory } from './redux/actions';
+import {
+  getAllProducts,
+  keepLogin,
+  getCategory,
+  getCart,
+  getAllTransaction,
+} from './redux/actions';
 import CartPage from './pages/CartPage';
 import TransactionPage from './pages/TransactionPage';
 import TransactionDetail from './pages/TransactionDetail';
@@ -26,8 +35,10 @@ const App = (props) => {
 
   useEffect(() => {
     dispatch(keepLogin());
-    dispatch(getProducts());
+    dispatch(getAllProducts());
     dispatch(getCategory());
+    dispatch(getCart());
+    dispatch(getAllTransaction());
   }, []);
 
   const { role } = useSelector(({ usersReducer }) => {
@@ -62,14 +73,23 @@ const App = (props) => {
               component={AdminProductDetail}
             />
             <Route path='/admin-add-product' component={AdminAddProduct} />
+            <Route
+              path='/admin-edit-product/:idproduct'
+              component={AdminEditProduct}
+            />
+            <Route path='/admin-transaksi' component={AdminTransaksi} />
+            <Route
+              path='/admin-transaksi-detail'
+              component={AdminTransaksiDetail}
+            />
           </>
-        ) : (
+        ) : role === 'user' && (
           <>
             <Route path='/order-list' component={TransactionPage} />
             <Route path='/order-detail' component={TransactionDetail} />
             <Route path='/cart' component={CartPage} />
-          </>
-        )}
+          </>)
+        }
         <Route path='*' component={NotFound} />
       </Switch>
       <Footer />

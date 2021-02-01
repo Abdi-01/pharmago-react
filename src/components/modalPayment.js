@@ -15,9 +15,9 @@ const ModalPayment = (props) => {
             <ModalBody className='d-flex'>
                 <img src={payment_confirmation} alt='payment' width='50%' style={{ flex: 1 }} />
                 <div style={{ flex: 1, marginLeft: 20, marginRight: 20 }}>
-                    <Button color="success" onClick={() => { dispatch(payment(props.idpayment)); props.paymentSuccess() }} block style={{ marginTop: '4vw' }}>Konfirmasi Pembayaran</Button>{' '}
+                    <Button color="success" onClick={() => { dispatch(payment(props.idpayment)); props.paymentSuccess(); console.log(props.idpayment) }} block style={{ marginTop: '4vw' }}>Konfirmasi Pembayaran</Button>{' '}
                     <Link to='order-list' style={{ textDecoration: 'none' }}>
-                        <Button disabled block outline style={{ marginTop: '1vw' }}>Lihat Daftar Belanja</Button>
+                        <Button block outline style={{ marginTop: '1vw' }}>Lihat Daftar Belanja</Button>
                     </Link>
                 </div>
             </ModalBody>

@@ -7,6 +7,9 @@ import DashboardAdmin from './DashboardAdmin';
 import AdminProduct from './AdminProduct';
 import AdminProductDetail from './AdminProductDetail';
 import AdminAddProduct from './AdminAddProduct';
+import AdminEditProduct from './AdminEditProduct';
+import AdminTransaksi from './AdminTransaksi';
+import AdminTransaksiDetail from './AdminTransaksiDetail';
 
 export {
   Home,
@@ -18,4 +21,7 @@ export {
   AdminProduct,
   AdminProductDetail,
   AdminAddProduct,
+  AdminEditProduct,
+  AdminTransaksi,
+  AdminTransaksiDetail,
 };

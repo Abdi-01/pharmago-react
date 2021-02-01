@@ -2,13 +2,14 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Card, CardBody, CardImg, CardText, CardTitle, Container, DropdownItem } from 'reactstrap';
 import CardTransaction from '../components/cardTransaction';
-import { getTransaction } from '../redux/actions';
+import { getCart, getTransaction } from '../redux/actions';
 
 const TransactionPage = (props) => {
     const dispatch = useDispatch()
 
     useEffect(() => {
-        dispatch(getTransaction(3))
+        dispatch(getTransaction())
+        dispatch(getCart())
     }, [])
 
     const { iduser, cartUser, customProducts, defaultAddress, transactions } = useSelector(state => {
@@ -45,7 +46,7 @@ const TransactionPage = (props) => {
             </div> */}
             <div className='m-2' style={{flex: 4}}>
                 <Card>
-                    <CardBody>
+                    <CardBody style={{position: 'relative'}}>
                         <CardTitle>Daftar Belanja</CardTitle>
                         <DropdownItem divider style={{marginBottom: 20}} />
                         {renderTransaction()}

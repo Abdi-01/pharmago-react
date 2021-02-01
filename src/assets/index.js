@@ -9,5 +9,6 @@ import no_data from './image/no_data.svg';
 import payment_confirmation from './image/payment_confirmation.svg';
 import not_pay_yet from './image/not_pay_yet.svg'
 import paid from './image/paid.svg'
+import ImageNotFound from './image/img0not-found.jpg';
 
-export { LogoPharmaGo, BloodIcon, IvIcon, DrugIcon, Banner1, Banner2, Banner3, no_data, payment_confirmation, not_pay_yet, paid };
+export { ImageNotFound, LogoPharmaGo, BloodIcon, IvIcon, DrugIcon, Banner1, Banner2, Banner3, no_data, payment_confirmation, not_pay_yet, paid };

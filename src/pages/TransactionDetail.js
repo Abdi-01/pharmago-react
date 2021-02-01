@@ -1,15 +1,22 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button, Card, CardBody, CardImg, CardText, CardTitle, Container, DropdownItem } from 'reactstrap';
-import { getDefaultAddress, getDetailTransaction } from '../redux/actions';
+import { getDefaultAddress, getDetailTransaction, payment } from '../redux/actions';
 import { not_pay_yet, paid } from '../assets'
 import Moment from 'moment';
 import { API_URL } from '../support/urlApi';
+import ModalPayment from '../components/modalPayment';
+import Swal from 'sweetalert2';
 
 
 const TransactionDetail = (props) => {
     Moment.locale('id')
     console.log(props.location.search) //?idtransaction=1
+
+    // modal
+    const [modal, setModal] = useState(false);
+    const toggleModal = () => setModal(!modal);
+
 
     const dispatch = useDispatch()
     useEffect(() => {
@@ -34,17 +41,24 @@ const TransactionDetail = (props) => {
         return count
     }
 
+
+
     const renderProductDetail = () => {
         return detailTransaction[0].products.map((item, index) => {
             return (
                 <div className='d-flex' key={index} style={{ fontSize: 13, marginRight: 25 }}>
-                    <div style={{ flex: 1 }}>
-                        <img src={API_URL + item.product_image} />
+                    <div style={{ flex: 1, marginLeft: 5 }}>
+                        {
+                            item.product_image === null ?
+                                <img width='40%' src={'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT8kDX11rAgv8YY1KYqyauOMcASpPp6w-_52Q&usqp=CAU'} />
+                                :
+                                <img width='40%' src={API_URL + item.product_image} />
+                        }
                     </div>
                     <div style={{ flex: 3 }}>
                         <p>{item.name}</p>
                         <p style={{ color: 'grey', marginTop: -20 }}>
-                            x {item.qty_co === null ? item.qty_qo : item.qty_co}
+                            x {item.qty_co === null ? item.qty_qo : item.qty_co} {item.qty_co !== null ? item.name !== 'BIOSYAFA G10' ? item.name !== 'BIOZIME' ? 'mg' : 'ml' : 'ml' : 'kemasan'}
                         </p>
                     </div>
                     <div style={{ flex: 1, fontWeight: 'bold', textAlign: 'right', fontSize: 13 }}>
@@ -100,8 +114,9 @@ const TransactionDetail = (props) => {
                         </h6>
 
                         {/* <p style={{ fontSize: 13 }}>{detailTransaction[0].invoice_number}</p> */}
-                        <p style={{ fontSize: 13, color: 'grey' }}>{Moment(detailTransaction[0].created_at).format('ll')}, {Moment(detailTransaction[0].created_at).format('LT')} WIB</p>
-                        <p style={{ fontSize: 12, color: 'grey', marginTop: -18 }}>{countProduct()} produk, Rp {parseInt(detailTransaction[0].total_payment).toLocaleString()}</p>
+                        <p style={{ fontSize: 13, color: 'grey' }}>{Moment(detailTransaction[0].created_at).zone('+1400').format('ll')}, {Moment(detailTransaction[0].created_at).zone('+1400').format('LT')} WIB</p>
+                        {/* <p style={{ fontSize: 12, color: 'grey', marginTop: -18 }}>{countProduct()} produk, Rp {parseInt(detailTransaction[0].total_payment).toLocaleString()}</p> */}
+                        <p style={{ fontSize: 12, color: 'grey', marginTop: -18 }}>{countProduct()} produk</p>
                         <p>Daftar Pesanan</p>
                         {renderProductDetail()}
                         {
@@ -154,7 +169,10 @@ const TransactionDetail = (props) => {
             </CardBody>
             {
                 detailTransaction[0].payment_status == 'unpaid' &&
-                <Button block color='success' style={{ marginTop: 20, marginBottom: 20, marginLeft: '5%', width: '90%', justifyContent: 'center' }}>
+                <Button block color='success'
+                    style={{ marginTop: 20, marginBottom: 20, marginLeft: '5%', width: '90%', justifyContent: 'center' }}
+                    onClick={toggleModal}
+                >
                     <i className='material-icons' style={{ fontSize: 25, color: 'white', position: 'relative', top: 5, right: 10 }}>verified_user</i>
                     Lakukan Pembayaran Menggunakan Go-Pay
                     </Button>
@@ -162,12 +180,59 @@ const TransactionDetail = (props) => {
         </Card>
     }
 
+    const paymentSuccess = () => {
+        let timerInterval;
+        Swal.fire({
+            title: 'Payment in Progress',
+            html: 'I will close after payment confirmed.',
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: () => {
+                Swal.showLoading();
+                timerInterval = setInterval(() => {
+                    const content = Swal.getContent();
+                    if (content) {
+                        const b = content.querySelector('b');
+                        if (b) {
+                            b.textContent = Swal.getTimerLeft();
+                        }
+                    }
+                }, 100);
+            },
+            willClose: () => {
+                clearInterval(timerInterval);
+            },
+        });
+        setTimeout(
+            () =>
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Your Payment Has Been Confirmed',
+                    showConfirmButton: false,
+                    timer: 2000,
+                }),
+            3000
+        );
+
+        setTimeout(() => window.location.reload(false), 5000);
+    };
+
     return (
         <Container>
             <h6 style={{ marginBottom: 20, marginTop: 20 }}>DETAIL TRANSAKSI</h6>
             {
                 detailTransaction.length > 0 && renderTransactionDetail()
             }
+            {
+                detailTransaction.length > 0 &&
+                <ModalPayment
+                    modal={modal}
+                    toggleModal={toggleModal}
+                    idpayment={detailTransaction[0].idtransaction}
+                    paymentSuccess={paymentSuccess}
+                />
+            }
+
         </Container>
     )
 }

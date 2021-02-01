@@ -7,6 +7,12 @@ import './login.css';
 
 const Login = (props) => {
   const { register, errors, handleSubmit } = useForm();
+  const [visiblePassword, setVisiblePassword] = useState(false);
+
+  const togglePassword = () => {
+    setVisiblePassword(!visiblePassword);
+  };
+
   return (
     <Modal
       visible={props.visible}
@@ -21,7 +27,12 @@ const Login = (props) => {
           <p style={{ color: 'grey', fontSize: '14px' }}>
             Belum punya akun?
             <span
-              style={{ color: 'black' }}
+              style={{
+                color: 'black',
+                fontWeight: 'bold',
+                fontSize: 16,
+                textDecoration: 'underline',
+              }}
               onClick={props.linkToRegister}
               role='button'
             >
@@ -72,12 +83,12 @@ const Login = (props) => {
                 )}
               />
             </div>
-            <div className='mb-4'>
+            <div className='mb-4 position-relative'>
               <label htmlFor='password' className='form-label'>
                 Password
               </label>
               <input
-                type='password'
+                type={!visiblePassword ? 'password' : 'text'}
                 name='password'
                 className='form-control'
                 id='password'
@@ -85,6 +96,19 @@ const Login = (props) => {
                   required: 'Password is required.',
                 })}
               />
+              <i
+                className='material-icons position-absolute'
+                role='button'
+                style={{
+                  left: '19.7rem',
+                  top: '2.6rem',
+                  fontSize: 20,
+                }}
+                onClick={togglePassword}
+              >
+                remove_red_eye
+              </i>
+
               <ErrorMessage
                 errors={errors}
                 name='password'
@@ -93,7 +117,7 @@ const Login = (props) => {
                 )}
               />
               <p
-                className='text-right mt-2 text-secondary'
+                className='text-right mt-2 text-secondary '
                 onClick={props.openForgotPassword}
                 role='button'
               >
