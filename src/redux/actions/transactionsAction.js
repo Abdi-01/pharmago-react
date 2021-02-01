@@ -64,10 +64,10 @@ export const getTransaction = () => {
       };
 
       if (localStorage.getItem('token')) {
-        let get = await Axios.get(API_URL + `/transactions`, headers)
+        let get = await Axios.get(API_URL + `/transactions`, headers);
         dispatch({
-          type: "GET_TRANSACTIONS",
-          payload: get.data.transactions
+          type: 'GET_TRANSACTIONS',
+          payload: get.data.transactions,
         });
       }
 
@@ -78,9 +78,9 @@ export const getTransaction = () => {
       //     payload: get.data.transactions
       // })
     } catch (error) {
-      console.log('transactionAction.js get error: ', error)
+      console.log('transactionAction.js get error: ', error);
     }
-  }
+  };
 };
 
 export const payment = (idtransaction) => {
@@ -90,7 +90,7 @@ export const payment = (idtransaction) => {
         API_URL + `/transactions/payment/${idtransaction}`
       );
       console.log('transactionAction.js payment: ', pay.data);
-      dispatch(getTransaction())
+      dispatch(getTransaction());
       // let get = await Axios.get(API_URL + `/transactions/${iduser}`)
       // dispatch({
       //     type: "GET_TRANSACTIONS",
@@ -137,6 +137,7 @@ export const getAllDetailTransaction = (idtransaction) => {
     }
   };
 };
+
 export const getDetailTransaction = (detail) => {
   return async (dispatch) => {
     try {
@@ -147,10 +148,10 @@ export const getDetailTransaction = (detail) => {
       };
 
       if (localStorage.getItem('token')) {
-        let get = await Axios.get(API_URL + `/transactions${detail}`, headers)
+        let get = await Axios.get(API_URL + `/transactions${detail}`, headers);
         dispatch({
-          type: "GET_DETAIL_TRANSACTION",
-          payload: get.data.transactions
+          type: 'GET_DETAIL_TRANSACTION',
+          payload: get.data.transactions,
         });
       }
 
@@ -160,9 +161,36 @@ export const getDetailTransaction = (detail) => {
       //       type: 'GET_DETAIL',
       //       payload: get.data.transactions,
       //     });
-
     } catch (error) {
       console.log(error);
+    }
+  };
+};
+
+export const getReportTrx = () => {
+  return async (dispatch) => {
+    try {
+      let get = await Axios.get(API_URL + `/transactions/report-trx`);
+      dispatch({
+        type: 'GET_REPORT_TRANSACTION',
+        payload: get.data.reportData,
+      });
+    } catch (error) {
+      console.log('transactionAction.js get error: ', error);
+    }
+  };
+};
+
+export const getReportChart = () => {
+  return async (dispatch) => {
+    try {
+      let get = await Axios.get(API_URL + `/transactions/report-chart`);
+      dispatch({
+        type: 'GET_REPORT_CHART',
+        payload: get.data.reportData,
+      });
+    } catch (error) {
+      console.log('transactionAction.js get error: ', error);
     }
   };
 };

@@ -104,7 +104,8 @@ const AdminProductDetail = (props) => {
                   </p>
                   <p className='border-bottom pb-1'>
                     {Math.floor(item.stock_pcs)}{' '}
-                    {item.type_obat === 'racik' ? 'item' : item.satuan}
+                    {item.type_obat === 'racik' ? 'item' : item.satuan} (@
+                    {item.qty_per_pcs})
                   </p>
                   <p className='border-bottom pb-1'>
                     {Math.floor(item.total_stock_satuan)}{' '}

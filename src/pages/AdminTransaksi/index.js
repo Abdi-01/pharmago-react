@@ -19,7 +19,6 @@ const AdminTransaksi = (props) => {
   const history = useHistory();
   const { allProducts, allTransaction } = useSelector(
     ({ usersReducer, ProductsReducer, transactionsReducer }) => {
-      console.log('alllllllllllllllllllllllllll', transactionsReducer.allTransaction)
       return {
         name: usersReducer.name,
         allProducts: ProductsReducer.allProducts,
@@ -32,7 +31,7 @@ const AdminTransaksi = (props) => {
   const onChangeSearch = (e) => {
     console.log(e.target.value);
     let ItemSelected = allTransaction.filter((elem, idx) => {
-      let searchValue = elem.name.toLowerCase();
+      let searchValue = elem.invoice_number.toUpperCase();
       // console.log(searchValue);
       return searchValue.indexOf(e.target.value) !== -1;
     });
@@ -52,40 +51,40 @@ const AdminTransaksi = (props) => {
 
   // render product lists
   const renderTransactions = () => {
-    if(renderSelected)
-    return renderSelected.map((item, idx) => {
-      return (
-        <tr className='text-center' key={idx}>
-          <th>{idx + 1}</th>
-          <td className='text-left'>{item.invoice_number}</td>
-          <td>{item.customer}</td>
-          <td className='text-center'>
-            {moment(item.created_at).format('LLL')}
-          </td>
-          <td className='text-center'>
-            <span
-              className={
-                item.payment_status === 'paid'
-                  ? 'badge bg-success text-white p-2'
-                  : 'badge bg-danger text-white p-2'
-              }
-            >
-              {item.payment_status}
-            </span>
-          </td>
-          <td className='text-center'>{item.transaction_type}</td>
-          <th>
-            <Button
-              color='primary'
-              size='sm mr-4'
-              onClick={() => handleButtonDetail(idx, item.idtransaction)}
-            >
-              Detail Transaksi
-            </Button>
-          </th>
-        </tr>
-      );
-    });
+    if (renderSelected)
+      return renderSelected.map((item, idx) => {
+        return (
+          <tr className='text-center' key={idx}>
+            <th>{idx + 1}</th>
+            <td className='text-left'>{item.invoice_number}</td>
+            <td>{item.customer}</td>
+            <td className='text-center'>
+              {moment(item.created_at).format('LLL')}
+            </td>
+            <td className='text-center'>
+              <span
+                className={
+                  item.payment_status === 'paid'
+                    ? 'badge bg-success text-white p-2'
+                    : 'badge bg-danger text-white p-2'
+                }
+              >
+                {item.payment_status}
+              </span>
+            </td>
+            <td className='text-center'>{item.transaction_type}</td>
+            <th>
+              <Button
+                color='primary'
+                size='sm mr-4'
+                onClick={() => handleButtonDetail(idx, item.idtransaction)}
+              >
+                Detail Transaksi
+              </Button>
+            </th>
+          </tr>
+        );
+      });
   };
 
   // Sort Function
@@ -131,7 +130,7 @@ const AdminTransaksi = (props) => {
           <div className='row mb-3'>
             <div className='col-8 d-flex justify-content-start'>
               <Input
-                placeholder='Cari nama pelanggan'
+                placeholder='Cari No Pesanan'
                 className='text-left w-50'
                 onChange={onChangeSearch}
               />

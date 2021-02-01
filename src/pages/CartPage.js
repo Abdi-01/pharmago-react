@@ -72,7 +72,7 @@ const CartPage = (props) => {
       iduser: state.usersReducer.iduser,
       cartUser: state.CartReducer.cartUser,
       customProducts: state.ProductsReducer.customProducts,
-      defaultAddress: state.usersReducer.defaultAddress[0],
+      defaultAddress: state.usersReducer.defaultAddress,
       idpayment: state.transactionsReducer.idpayment,
       customCart: state.CartReducer.customCart,
     };

@@ -42,21 +42,28 @@ const Navbar = (props) => {
   const toggleCart = () => setDropCartOpen((prevState) => !prevState);
   const history = useHistory();
 
-  const { errorStatus, errorMessage, iduser, role, products, cartUser, detailProduct, name } = useSelector(
-    ({ usersReducer, ProductsReducer, CartReducer }) => {
-      console.log('Cek data =========', usersReducer)
-      return {
-        errorStatus: usersReducer.errorStatus,
-        errorMessage: usersReducer.errorMessage,
-        role: usersReducer.role,
-        name: usersReducer.name,
-        iduser: usersReducer.iduser,
-        products: ProductsReducer.products,
-        cartUser: CartReducer.cartUser,
-        detailProduct: ProductsReducer.detailProduct
-      };
-    }
-  );
+  const {
+    errorStatus,
+    errorMessage,
+    iduser,
+    role,
+    products,
+    cartUser,
+    detailProduct,
+    name,
+  } = useSelector(({ usersReducer, ProductsReducer, CartReducer }) => {
+    console.log('Cek data =========', usersReducer);
+    return {
+      errorStatus: usersReducer.errorStatus,
+      errorMessage: usersReducer.errorMessage,
+      role: usersReducer.role,
+      name: usersReducer.name,
+      iduser: usersReducer.iduser,
+      products: ProductsReducer.products,
+      cartUser: CartReducer.cartUser,
+      detailProduct: ProductsReducer.detailProduct,
+    };
+  });
 
   useEffect(() => {
     dispatch(getCart());
@@ -364,75 +371,76 @@ const Navbar = (props) => {
                         </DropdownMenu>
                       </Dropdown>
                     ) : (
-                        <Dropdown isOpen={dropdownOpen} toggle={toggle}>
-                          <DropdownToggle
-                            style={{
-                              backgroundColor: 'transparent',
-                              border: 'none',
-                              alignSelf: 'center',
-                            }}
-                          >
-                            <i className='large material-icons right-menu_icon'>
-                              account_circle
-                          </i>
-                          </DropdownToggle>
-                          <DropdownMenu right style={{ width: '14rem' }}>
-                            <DropdownItem
-                              style={{
-                                fontWeight: 'bold',
-                                display: 'flex',
-                              }}
-                            >
-                              <Card className='w-100 pl-5 pr-5 pt-2 pb-2'>
-                                <span>{name}</span>
-                              </Card>
-                            </DropdownItem>
-                            <DropdownItem divider />
-                            <DropdownItem
-                              style={{
-                                display: 'flex',
-                              }}
-                            >
-                              <i className='large material-icons mr-2'>
-                                account_box
-                            </i>{' '}
-                              <span>Profile</span>
-                            </DropdownItem>
-                            <DropdownItem divider />
-                            <DropdownItem
-                              onClick={onLogout}
-                              style={{
-                                display: 'flex',
-                              }}
-                            >
-                              <i className='large material-icons mr-2'>
-                                exit_to_app
-                            </i>
-                              <span>Logout</span>
-                            </DropdownItem>
-                          </DropdownMenu>
-                        </Dropdown>
-                      )
-                  ) : (
                       <Dropdown isOpen={dropdownOpen} toggle={toggle}>
                         <DropdownToggle
                           style={{
                             backgroundColor: 'transparent',
                             border: 'none',
-                            color: 'black',
-                            fontWeight: 'bold',
+                            alignSelf: 'center',
                           }}
-                          onClick={openModal}
                         >
-                          <div className='d-flex mb-2'>
-                            <i className='large material-icons right-menu_icon pr-1'>
-                              login
+                          <i className='large material-icons right-menu_icon'>
+                            account_circle
                           </i>
-                            <span>Login</span>
-                          </div>
                         </DropdownToggle>
+                        <DropdownMenu right style={{ width: '14rem' }}>
+                          <DropdownItem
+                            style={{
+                              fontWeight: 'bold',
+                              display: 'flex',
+                            }}
+                          >
+                            <Card className='w-100 pl-5 pr-5 pt-2 pb-2'>
+                              <span>{name}</span>
+                            </Card>
+                          </DropdownItem>
+                          <DropdownItem divider />
+                          <DropdownItem
+                            style={{
+                              display: 'flex',
+                            }}
+                            onClick={() => history.push('/order-list')}
+                          >
+                            <i className='large material-icons mr-2'>
+                              account_box
+                            </i>
+                            <span>Profile</span>
+                          </DropdownItem>
+                          <DropdownItem divider />
+                          <DropdownItem
+                            onClick={onLogout}
+                            style={{
+                              display: 'flex',
+                            }}
+                          >
+                            <i className='large material-icons mr-2'>
+                              exit_to_app
+                            </i>
+                            <span>Logout</span>
+                          </DropdownItem>
+                        </DropdownMenu>
                       </Dropdown>
-                    )}
+                    )
+                  ) : (
+                    <Dropdown isOpen={dropdownOpen} toggle={toggle}>
+                      <DropdownToggle
+                        style={{
+                          backgroundColor: 'transparent',
+                          border: 'none',
+                          color: 'black',
+                          fontWeight: 'bold',
+                        }}
+                        onClick={openModal}
+                      >
+                        <div className='d-flex mb-2'>
+                          <i className='large material-icons right-menu_icon pr-1'>
+                            login
+                          </i>
+                          <span>Login</span>
+                        </div>
+                      </DropdownToggle>
+                    </Dropdown>
+                  )}
                 </li>
               </ul>
             </div>

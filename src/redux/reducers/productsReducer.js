@@ -1,6 +1,7 @@
 const INITIAL_STATE = {
   products: [],
   detailProduct: [],
+  customProducts: [],
   category: [],
   search: [],
   errorStatus: null,
