@@ -48,7 +48,10 @@ const CardTransaction = ({ children }) => {
                     <div className='d-flex'>
                         {
                             children.products.length > 0 &&
-                            <img width='5%' src={API_URL + children.products[0].product_image} />
+                            children.products[0].product_image === null ?
+                            <img width='6%' src={'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS8iObK7vuPeC0Ik0gdMMRxY6P-yZhvStKscg&usqp=CAU'} />
+                            :
+                            <img width='6%' src={API_URL + children.products[0].product_image} />
                         }
                         {
                             children.products.length > 0 ?

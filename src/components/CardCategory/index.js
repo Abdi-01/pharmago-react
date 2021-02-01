@@ -52,7 +52,7 @@ const CardCategory = () => {
       Swal.fire('', 'Silahkan login untuk Custom Order!', 'info');
     }
   };
-
+  
   const renderCategory = () => {
     return (
       category.length > 0 &&

@@ -54,6 +54,7 @@ const CartPage = (props) => {
     dispatch(getDefaultAddress());
     dispatch(getCustomCart());
     dispatch(getCart());
+    console.log(defaultAddress)
   }, []);
 
   const {
@@ -68,7 +69,7 @@ const CartPage = (props) => {
       iduser: state.usersReducer.iduser,
       cartUser: state.CartReducer.cartUser,
       customProducts: state.ProductsReducer.customProducts,
-      defaultAddress: state.usersReducer.defaultAddress,
+      defaultAddress: state.usersReducer.defaultAddress[0],
       idpayment: state.transactionsReducer.idpayment,
       customCart: state.CartReducer.customCart,
     };

@@ -50,7 +50,7 @@ const TransactionDetail = (props) => {
                     <div style={{ flex: 1, marginLeft: 5 }}>
                         {
                             item.product_image === null ?
-                                <img width='40%' src={'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT8kDX11rAgv8YY1KYqyauOMcASpPp6w-_52Q&usqp=CAU'} />
+                                <img width='40%' src={'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS8iObK7vuPeC0Ik0gdMMRxY6P-yZhvStKscg&usqp=CAU'} />
                                 :
                                 <img width='40%' src={API_URL + item.product_image} />
                         }
