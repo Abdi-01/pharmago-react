@@ -42,21 +42,28 @@ const Navbar = (props) => {
   const toggleCart = () => setDropCartOpen((prevState) => !prevState);
   const history = useHistory();
 
-  const { errorStatus, errorMessage, iduser, role, products, cartUser, detailProduct, name } = useSelector(
-    ({ usersReducer, ProductsReducer, CartReducer }) => {
-      console.log('Cek data =========', usersReducer)
-      return {
-        errorStatus: usersReducer.errorStatus,
-        errorMessage: usersReducer.errorMessage,
-        role: usersReducer.role,
-        name: usersReducer.name,
-        iduser: usersReducer.iduser,
-        products: ProductsReducer.products,
-        cartUser: CartReducer.cartUser,
-        detailProduct: ProductsReducer.detailProduct
-      };
-    }
-  );
+  const {
+    errorStatus,
+    errorMessage,
+    iduser,
+    role,
+    products,
+    cartUser,
+    detailProduct,
+    name,
+  } = useSelector(({ usersReducer, ProductsReducer, CartReducer }) => {
+    // console.log('Cek data =========', usersReducer);
+    return {
+      errorStatus: usersReducer.errorStatus,
+      errorMessage: usersReducer.errorMessage,
+      role: usersReducer.role,
+      name: usersReducer.name,
+      iduser: usersReducer.iduser,
+      products: ProductsReducer.products,
+      cartUser: CartReducer.cartUser,
+      detailProduct: ProductsReducer.detailProduct,
+    };
+  });
 
   useEffect(() => {
     dispatch(getCart());
@@ -228,7 +235,7 @@ const Navbar = (props) => {
   };
 
   const renderCart = () => {
-    console.log('check cart in navbar', cartUser);
+    // console.log('check cart in navbar', cartUser);
     return cartUser.map((item, index) => {
       return (
         <>
@@ -392,11 +399,12 @@ const Navbar = (props) => {
                               style={{
                                 display: 'flex',
                               }}
+                              onClick={() => history.push('/order-list')}
                             >
                               <i className='large material-icons mr-2'>
-                                account_box
-                            </i>{' '}
-                              <span>Profile</span>
+                              receipt_long
+                            </i>
+                              <span>Transactions</span>
                             </DropdownItem>
                             <DropdownItem divider />
                             <DropdownItem

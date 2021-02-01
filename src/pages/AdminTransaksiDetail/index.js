@@ -202,17 +202,17 @@ const AdminTransaksiDetail = (props) => {
                             <td className='text-center'>
                               {trx.qty_qo === null ? 0 : trx.qty_qo}
                             </td>
-                            <td>
+                            <td className='text-right'>
                               Rp
                               {trx.price_pcs === null
                                 ? 0
                                 : trx.price_pcs.toLocaleString()}
                             </td>
-                            <td>
+                            <td className='text-right'>
                               Rp
                               {trx.total_price === null
                                 ? 0
-                                : trx.total_price.toLocaleString()}
+                                : parseInt(trx.total_price).toLocaleString()}
                             </td>
                           </tr>
                         </thead>
@@ -221,21 +221,21 @@ const AdminTransaksiDetail = (props) => {
                         <tr className='border-bottom'>
                           <td colSpan='4'></td>
                           <th className='text-danger'>Ongkos Kirim</th>
-                          <th className='text-danger'>
+                          <th className='text-danger text-right'>
                             - Rp
                             {item.ongkir === null
                               ? '-'
-                              : item.ongkir.toLocaleString()}
+                              : parseInt(item.ongkir).toLocaleString()}
                           </th>
                         </tr>
                         <tr className='border-bottom'>
                           <td colSpan='4'></td>
                           <th>Total Pembayaran</th>
-                          <td>
+                          <td className='text-right'>
                             Rp
                             {item.total_payment === null
                               ? 'Belum Bayar'
-                              : item.total_payment}
+                              : parseInt(item.total_payment).toLocaleString()}
                           </td>
                         </tr>
                       </tfoot>

@@ -1,16 +1,18 @@
 import Axios from 'axios';
 import { API_URL } from '../../support/urlApi';
 
+export const resetProducts = () => {
+  return {
+    type: 'RESET_PRODUCTS'
+  }
+}
+
 export const getProducts = (category) => {
   return async (dispatch) => {
     try {
       let get = '';
-      if (category) {
-        get = await Axios.get(API_URL + `/products${category}`);
-        console.log(API_URL + `/products/${category}`);
-      } else {
-        get = await Axios.get(API_URL + '/products');
-      }
+      get = await Axios.get(API_URL + `/products${category}`);
+      console.log(API_URL + `/products/${category}`);
       // console.log("productAction.js GetProducts: ", get.data)
       dispatch({
         type: 'GET_PRODUCTS',

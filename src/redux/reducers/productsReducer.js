@@ -1,6 +1,7 @@
 const INITIAL_STATE = {
   products: [],
   detailProduct: [],
+  customProducts: [],
   category: [],
   search: [],
   errorStatus: null,
@@ -14,6 +15,12 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         products: action.payload,
+      };
+    case 'RESET_PRODUCTS':
+      console.log('productsReducer.js RESET ', action.payload);
+      return {
+        ...state,
+        products: [],
       };
     case 'GET_CUSTOM_PRODUCTS':
       console.log('productsReducer.js GET_CUSTOM_PRODUCTS: ', action.payload);

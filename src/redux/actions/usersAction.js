@@ -89,6 +89,8 @@ export const loginUser = (email, password, cb) => {
           type: 'GET_DEFAULT_ADDRESS',
           payload: resAddress.data.defaultAddress,
         });
+        
+        dispatch(getDefaultAddress());
       }
     } catch (error) {
       dispatch({
@@ -158,6 +160,7 @@ export const keepLogin = () => {
           payload: results.data,
         });
         dispatch(getCart());
+        dispatch(getDefaultAddress());
       }
     } catch (error) {
       console.log(error);

@@ -12,6 +12,7 @@ import {
   DropdownMenu,
   DropdownItem,
   NavbarText,
+  NavbarBrand,
 } from 'reactstrap';
 
 const NavbarAdmin = () => {
@@ -20,7 +21,6 @@ const NavbarAdmin = () => {
   const dispatch = useDispatch();
 
   const history = useHistory();
-
   const { name } = useSelector(({ usersReducer }) => {
     return {
       name: usersReducer.name,
@@ -39,22 +39,46 @@ const NavbarAdmin = () => {
       expand='md'
       className='pt-3 pb-3 pl-3 pr-5 shadow navbar sticky-top navbar-light bg-light'
     >
+      <NavbarBrand
+        className='mr-auto'
+        style={{
+          fontSize: '20px',
+          paddingLeft: '30px',
+        }}
+      >
+        {name ? `Halo, ${name}` : 'PharmaGO'}!!
+      </NavbarBrand>
       <NavbarToggler onClick={toggle} />
-      <Collapse isOpen={isOpen} navbar>
-        <Nav className='mr-auto' navbar>
+      <Collapse
+        isOpen={isOpen}
+        navbar
+        style={{ flexBasis: '12%', flexGrow: 0 }}
+      >
+        <Nav classname='mr-auto' navbar>
           <UncontrolledDropdown nav inNavbar>
             <DropdownToggle nav style={{ fontSize: '20px', color: 'black' }}>
               <NavbarText
                 style={{
-                  fontSize: '20px',
+                  fontSize: '18px',
                   fontWeight: 'bold',
                   paddingLeft: '30px',
+                  position: 'relative',
                 }}
               >
                 Menu Utama
               </NavbarText>
+              <i
+                className='material-icons'
+                style={{
+                  position: 'absolute',
+                  fontSize: '2.6rem',
+                  color: 'grey',
+                }}
+              >
+                arrow_drop_down
+              </i>
             </DropdownToggle>
-            <DropdownMenu left>
+            <DropdownMenu left style={{ padding: 20 }}>
               <DropdownItem>
                 <Link to='/' className='text-black-50'>
                   Dashboard
@@ -82,14 +106,6 @@ const NavbarAdmin = () => {
             </DropdownMenu>
           </UncontrolledDropdown>
         </Nav>
-        <NavbarText
-          style={{
-            fontSize: '20px',
-            paddingLeft: '30px',
-          }}
-        >
-          {name ? `Halo, ${name}` : 'PharmaGO'}!!
-        </NavbarText>
       </Collapse>
     </Navbar>
   );

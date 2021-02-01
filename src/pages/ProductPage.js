@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getProducts } from '../redux/actions';
-import { Container, Dropdown, DropdownItem, DropdownMenu, DropdownToggle, Row } from 'reactstrap';
+import { Container, Dropdown, DropdownItem, DropdownMenu, DropdownToggle, Row, Spinner } from 'reactstrap';
 import CardProduct from '../components/cardProduct';
 
 const ProductPage = (props) => {
-    console.log(props.location.search) //?category=demam
+    // console.log(props.location.search) //?category=demam
     // Dropdown Setting 
     // const [dropdownName, setDropdownName] = useState('Sortir');
     const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -24,11 +24,18 @@ const ProductPage = (props) => {
 
 
     const renderProduct = () => {
-        return products.map((item, index) => {
-            return (
-                <CardProduct key={index}>{item}</CardProduct>
-            )
-        })
+        if (products.length == 0) {
+            return <div className="m-auto">
+                <Spinner color="success" />
+            </div>
+
+        } else {
+            return products.map((item, index) => {
+                return (
+                    <CardProduct key={index}>{item}</CardProduct>
+                )
+            })
+        }
     }
 
     // Sorting Function
@@ -105,7 +112,7 @@ const ProductPage = (props) => {
                     {renderCategory()}
                 </div>
                 <div style={{ width: '10%', alignContent: 'center' }}>
-                    <Dropdown isOpen={dropdownOpen} toggle={toggle} style={{ width: '100%',padding:'10%' }}>
+                    <Dropdown isOpen={dropdownOpen} toggle={toggle} style={{ width: '100%', padding: '10%' }}>
                         <DropdownToggle caret style={{ marginTop: 30, backgroundColor: 'gray' }} >
                             Sortir
                         </DropdownToggle>

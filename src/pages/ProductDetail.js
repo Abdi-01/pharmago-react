@@ -8,7 +8,7 @@ import { API_URL } from '../support/urlApi';
 import ModalCart from '../components/modalCart';
 
 const ProductDetail = (props) => {
-    console.log(props.location.search); //?idproduct=1
+    // console.log(props.location.search); //?idproduct=1
 
     const dispatch = useDispatch();
     const [qtyCart, setQtyCart] = useState(1);
@@ -75,7 +75,7 @@ const ProductDetail = (props) => {
     // Render Detail Product dengan Kondisi
     const renderDetail = () => {
         if (detailProduct.length > 0) {
-            console.log('detailProduct: ', detailProduct);
+            // console.log('detailProduct: ', detailProduct);
             return (
                 <Container>
                     <div className='ml-3 my-3'>

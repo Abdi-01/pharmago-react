@@ -1,13 +1,13 @@
 import React, { useEffect } from 'react';
 import { CardCategory, Banner } from '../../components';
 import { useDispatch } from 'react-redux';
-import { getProducts } from '../../redux/actions/productsAction';
+import { resetProducts } from '../../redux/actions/productsAction';
 
 const Home = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(getProducts());
+    dispatch(resetProducts());
   }, []);
 
   return (
